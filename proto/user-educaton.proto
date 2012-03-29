@@ -1,0 +1,10 @@
+package UserEducation;
+
+//教育信息
+message Education {
+    required int32  edu          = 1;  //学历
+    required string school       = 2;  //学校
+    optional string department   = 3;  //院系
+    optional int32  class        = 4;  //班级
+    optional int32  year         = 5;  //入学年份
+}

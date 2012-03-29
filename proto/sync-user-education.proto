@@ -1,0 +1,7 @@
+package SyncUserEducation;
+
+//社区向智能推荐系统同步用户教育信息
+message SyncEducationInfo {
+    required int64 uid            = 1;  //用户飞信内部ID
+    repeated Education educations = 2;  //教育信息列表
+}

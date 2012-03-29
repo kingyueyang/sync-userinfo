@@ -1,0 +1,7 @@
+package UserHeadProtrait;
+
+//社区向智能推荐系统同步用户是否存在头像
+message SyncHeaderInfo {
+    required int64 uid           = 1;  //用户飞信内部ID
+    required int32 header        = 2;  //用户头像。0：没有头像；1：有头像
+}
