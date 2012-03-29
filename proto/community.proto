@@ -1,0 +1,88 @@
+package community;
+
+//社区向智能推荐系统同步用户基础信息
+message SyncBasicInfo {
+    required int64 uid           = 1;   //用户飞信内部ID
+    optional int32 birth_year    = 2;   //出生年
+    optional int32 birth_month   = 3;   //出生月
+    optional int32 birth_day     = 4;   //出生日
+    optional int32 constellation = 5;   //星座
+    optional int32 blood_types   = 6;   //血型。0：未知；1：A；2：B；3：AB；4：O。
+    optional int32 sex           = 7;   //性别。0：未知；1：男；2：女。
+    optional string home_nation  = 8;   //家乡所在国家
+    optional string home_pro     = 9;   //家乡所在省
+    optional string home_city    = 10;  //家乡所在城市
+    optional string now_nation   = 11;  //现居住国家
+    optional string now_pro      = 12;  //现居住省
+    optional string now_city     = 13;  //现居住城市
+}
+
+//社区向智能推荐系统同步用户是否存在头像
+message SyncHeaderInfo {
+    required int64 uid           = 1;  //用户飞信内部ID
+    required int32 header        = 2;  //用户头像。0：没有头像；1：有头像
+}
+
+//教育信息
+message Education {
+    required int32  edu          = 1;  //学历
+    required string school       = 2;  //学校
+    optional string department   = 3;  //院系
+    optional int32  class        = 4;  //班级
+    optional int32  year         = 5;  //入学年份
+}
+
+//社区向智能推荐系统同步用户教育信息
+message SyncEducationInfo {
+    required int64 uid            = 1;  //用户飞信内部ID
+    repeated Education educations = 2;  //教育信息列表
+}
+
+//工作信息
+message Employment {
+    required int32 begin_year     = 1;  //入职年份
+    required int32 begin_month    = 2;  //入职月份
+    required int32 end_year       = 3;  //离职年份
+    required int32 end_month      = 4;  //离职月份
+    required string company       = 5;  //公司
+    optional string post          = 6;  //职务
+}
+
+//社区向智能推荐系统同步用户工作信息
+message SyncEmploymentInfo {
+    required int64 uid              = 1;  //用户飞信内部ID
+    repeated Employment employments = 2;  //工作信息列表
+}
+
+
+//社区从智能推荐系统获取用户的推荐内容
+message GetRecommendation {
+    required int64 uid       = 1;   //用户飞信内部ID
+    required int32 strategy  = 2;   //推荐策略：0：可能认识的人；1：同校；2：同班；3：同乡；4：好友的同校好友。
+    required int32 exclusion = 3;   //是否排除当前好友。0：不排除；1：排除。
+    required int32 count     = 4;   //获取推荐内容数量，0为获取全部
+}
+
+//推荐原因
+//  reason字段内容随请求推荐策略不同而不同。
+//    可能认识的人：0：共同好友；1：BOSS话单；2：同IP；3：共同群组；4：通讯录。
+//    同校：学校编码。
+//    同班：班级编码。
+//    同乡：学校编码。
+//    好友的同校好友：好友UID。
+message RecommendationReason {
+    required string reason  = 1;   //推荐原因
+    optional string ext     = 2;   //扩展字段，如共同好友数、共同群组数等
+}
+
+//好友推荐列表
+message Recommendation {
+    required int64 uid                     = 1;  //用户飞信内部ID
+    optional RecommendationReason reasons  = 2;  //推荐原因列表
+}
+
+//智能推荐系统向社区返回推荐内容
+message ReturnRecommendation {
+    repeated Recommendation recommendations = 1; //推荐内容列表
+}
+
