@@ -67,7 +67,7 @@ main( int argc, char *argv[] ) {
         community__sync_basic_info__pack(&sync_basic_info, sync_basic_info_buff);
     assert(sync_basic_info_size == rc_size);
 
-    char *server_url = "http://127.0.0.1:8080/basicinfo";
+    char *server_url = "http://127.0.0.1:8080/syncbasicinfo";
     http_post_pb(sync_basic_info_buff, rc_size, server_url);
 
     return EXIT_SUCCESS;

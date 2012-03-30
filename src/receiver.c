@@ -29,7 +29,7 @@ receiver( void ) {
     struct evhttp *http;
     struct evhttp_bound_socket *handle;
 
-    unsigned short port = server.receiverIP;
+    unsigned short port = server.receiverPort;
 
     /* As you konw */
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
@@ -50,16 +50,28 @@ receiver( void ) {
     }
 
     /*
-     * The path /post/syncbasicinfo only support post mothod, 
+     * The path /syncbasicinfo only support post mothod, 
      * it design for sync user basic information
      */
-    evhttp_set_cb(http, "/get", get_config_cb, NULL);
+    evhttp_set_cb(http, "/syncbasicinfo", post_SBI_cb, NULL);
 
     /*
-     * The path /post support post method
-     * When sharding node need to be grant, it can post request
+     * The path /syncheaderinfo only support post mothod, 
+     * it design for sync user head portrait information
      */
-    evhttp_set_cb(http, "/post", post_grant_cb, NULL);
+    evhttp_set_cb(http, "/syncheaderinfo", post_SHI_cb, NULL);
+
+    /*
+     * The path /synceducationinfo only support post mothod, 
+     * it design for sync user education information
+     */
+    evhttp_set_cb(http, "/synceducationinfo", post_SEI_cb, NULL);
+
+    /*
+     * The path /syncemploymentinfo only support post mothod, 
+     * it design for sync user education information
+     */
+    evhttp_set_cb(http, "/syncemploymentinfo", post_SMI_cb, NULL);
 
     /* We want to accept arbitrary requests, so we need to set a "generic"
      * cb.  We can also add callbacks for specific paths. */
@@ -82,73 +94,21 @@ receiver( void ) {
 static void
 other_cb(struct evhttp_request *req, void *arg) {
     printf("Other Path\n");
-    evhttp_send_reply(req, 400, "olo", NULL);
+    evhttp_send_reply(req, 401, "olo:not found this path", NULL);
     return;
 }
 
 static void
-get_config_cb(struct evhttp_request *req, void *arg) {
-    struct evbuffer *buf = evbuffer_new();
-
-    if (EVHTTP_REQ_GET != evhttp_request_get_command(req)) {
-        evhttp_send_reply(req, 500, "not support this method", NULL);
-        /*log it*/
-        printf("/get Not Support This Method\n");
-        evbuffer_free(buf);
-        return;
-    }
-
-    static char test_char[] = 
-        "ok, you get this message";
-    char *msg = NULL;
-    /*gen_data(&msg);*/
-    printf("out: %s\n", msg);
-
-    evbuffer_add(buf, msg, strlen(msg));
-    evhttp_send_reply(req, 200, "OK", buf);
-    printf("test get\n");
-    printf("====================\n");
-
-    evbuffer_free(buf);
-    free(msg);
-    msg = NULL;
+post_SEI_cb(struct evhttp_request *req, void *arg) {
+    fprintf(stdout, "SEI\n");
+    evhttp_send_reply(req, 200, "OK", NULL);
     return ;
 }
 
 static void
-post_grant_cb(struct evhttp_request *req, void *arg) {
-    struct evbuffer *buf;
-    char *buffer = NULL;
-
-    printf("POST Request\n");
-
-    if (EVHTTP_REQ_POST != evhttp_request_get_command(req)) {
-        evhttp_send_reply(req, 500, "not support this method", NULL);
-        /*log it*/
-        printf("/post not support this method\n");
-        return;
-    }
-
-    buf = evhttp_request_get_input_buffer(req);
-    size_t sz = evbuffer_get_length(buf);
-
-    buffer = malloc(sz);
-    if (NULL == buffer) {
-        evhttp_send_reply(req, 500, "alloc memroy error", NULL);
-        return ;
-    }
-
-    /* Init temp buffer */
-    memset(buffer, 0, sz);
-    while (evbuffer_get_length(buf)) {
-        int n;
-        n = evbuffer_remove(buf, buffer, sz);
-    }
-    /*parser(buffer, sz);*/
-
-    free(buffer);
-    buffer = NULL;
-
+post_SMI_cb(struct evhttp_request *req, void *arg) {
+    fprintf(stdout, "SMI\n");
     evhttp_send_reply(req, 200, "OK", NULL);
     return ;
 }
+

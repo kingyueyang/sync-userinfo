@@ -43,10 +43,13 @@
 #include <arpa/inet.h>
 
 #include "sync-userinfo.h"
+#include "inf_basic_info.h"
+#include "inf_header_info.h"
 
 int receiver( void );
 static void other_cb( struct evhttp_request *req, void *arg );
-static void get_config_cb( struct evhttp_request *req, void *arg );
-static void post_grant_cb( struct evhttp_request *req, void *arg );
+
+static void post_SEI_cb(struct evhttp_request *req, void *arg);
+static void post_SMI_cb(struct evhttp_request *req, void *arg);
 
 #endif
