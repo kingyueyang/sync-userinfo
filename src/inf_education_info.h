@@ -26,7 +26,7 @@
 #include "receiver.h"
 #include "utils.h"
 
-void post_SBI_cb(struct evhttp_request *req, void *arg);
+void post_SEI_cb(struct evhttp_request *req, void *arg);
 
 #endif
 

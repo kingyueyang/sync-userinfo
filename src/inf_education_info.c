@@ -19,12 +19,12 @@
 #include "inf_education_info.h"
 
 void
-post_SBI_cb(struct evhttp_request *req, void *arg) {
+post_SEI_cb(struct evhttp_request *req, void *arg) {
     size_t evbuf_length;
     size_t proto_length;
     unsigned char *body_buff = NULL;
     struct evbuffer *http_buf;
-    Community__SyncEducationInfo = *_sync_education_info;
+    Community__SyncEducationInfo *_sync_education_info;
 
 
     /* Only allow POST method */
@@ -63,11 +63,11 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
     for(int i = 0; i < 2; i++) {
         printf ( "%d,%s,%s,%d,%d\n",
-                _sync_education_info.education[i]->edu;
-                _sync_education_info.education[i]->school;
-                _sync_education_info.education[i]->department;
-                _sync_education_info.education[i]->class_;
-                _sync_education_info.education[i]->year;
+                _sync_education_info->educations[i]->edu,
+                _sync_education_info->educations[i]->school,
+                _sync_education_info->educations[i]->department,
+                _sync_education_info->educations[i]->class_,
+                _sync_education_info->educations[i]->year
                );
     }
     fflush(stdout);
