@@ -24,9 +24,6 @@
 
 #include "receiver.h"
 
-/* 2 = comma and '\0' */
-#define	HEADER_OFFSET 2			/* offset in output buff */
-
 void post_SHI_cb(struct evhttp_request *req, void *arg);
 
 #endif
