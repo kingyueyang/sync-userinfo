@@ -23,7 +23,7 @@ main( int argc, char *argv[] ) {
     int64_t uid = 1057346343;
 
     int32_t birth_year = 1987;
-    int32_t birth_month = 02;
+    int32_t birth_month = 2;
     int32_t birth_day = 24;
     int32_t constellation = 2;
 
@@ -65,6 +65,12 @@ main( int argc, char *argv[] ) {
     size_t rc_size = 
         community__sync_basic_info__pack(&sync_basic_info, sync_basic_info_buff);
     assert(sync_basic_info_size == rc_size);
+#if 1
+    Community__SyncBasicInfo *test;
+    test = community__sync_basic_info__unpack(NULL, rc_size, sync_basic_info_buff);
+    printf ( "%d\n", test->uid);
+    printf ( "%d\n", test->birth_year);
+#endif
 
     char *server_url = "http://127.0.0.1:8080/syncbasicinfo";
     http_post_pb(sync_basic_info_buff, rc_size, server_url);

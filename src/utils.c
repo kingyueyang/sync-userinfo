@@ -24,8 +24,11 @@ xmalloc( size_t size ) {
   if( 0 == size )
     return NULL;
   rv = malloc (size);
-  if( NULL == rv )
+  if( NULL == rv ) {
     die( "out-of-memory allocating %u bytes", (unsigned) size );
+    return rv;
+  }
+  memset(rv, 0, size);
   return rv;
 }
 
@@ -43,6 +46,14 @@ xrealloc( void *a, size_t size ) {
   if( NULL == rv )
     die( "out-of-memory re-allocating %u bytes", (unsigned) size );
   return rv;
+}
+
+void
+xfree( void *p) {
+    if( p != NULL) {
+        free(p);
+        p = NULL;
+    }
 }
 
 char *

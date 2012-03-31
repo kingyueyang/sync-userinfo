@@ -17,16 +17,85 @@
  */
 
 #include "inf_basic_info.h"
+#include <assert.h>
 
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
-    fprintf(stdout, "SBI\n");
-    size_t length;
+    size_t evbuf_length;
+    size_t proto_length;
+    unsigned char *body_buff = NULL;
+    unsigned char *out_buffer = NULL;
     struct evbuffer *http_buf;
-    http_buf = evhttp_request_get_input_buffer(req);
-    length = evbuffer_get_length(http_buf);
+    Community__SyncBasicInfo *_sync_basic_info;
 
-    evhttp_send_reply(req, 200, "OK", NULL);
+
+    /* Only allow POST method */
+    if( EVHTTP_REQ_POST != evhttp_request_get_command(req) ) {
+        evhttp_send_error(req, HTTP_BADMETHOD, NULL);
+        return ;
+    }
+
+    /* Get http buffer */
+    http_buf = evhttp_request_get_input_buffer( req );
+    evbuf_length = evbuffer_get_length( http_buf );
+    if( evbuf_length <= 0 ) {
+        evhttp_send_error( req, HTTP_BADREQUEST, 0 );
+        return ;
+    }
+
+    /* Remove to string */
+    body_buff = (unsigned char *)xmalloc( evbuf_length + 1 );
+    if( NULL == body_buff ) {
+        evhttp_send_error( req, HTTP_INTERNAL, 0 );
+        return ;
+    }
+    size_t sz = evbuffer_remove( http_buf, body_buff, evbuf_length );
+    assert( sz == evbuf_length );
+
+    /* Unpack SyncBasicInfo package */
+    _sync_basic_info =
+        community__sync_basic_info__unpack(NULL, evbuf_length, body_buff);
+    if( NULL == _sync_basic_info ) {
+        evhttp_send_error( req, HTTP_BADREQUEST, 0 );
+        return ;
+    }
+
+    proto_length =
+        community__sync_basic_info__get_packed_size(_sync_basic_info);
+    /* 13 = comma * 12 and '\0' */
+    out_buffer = (unsigned char *)xmalloc( proto_length + 13);
+    if( NULL == out_buffer) {
+        evhttp_send_error( req, HTTP_INTERNAL, 0 );
+        return ;
+    }
+
+    sprintf( out_buffer, "%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s\n",
+            _sync_basic_info->uid,
+            _sync_basic_info->birth_year,
+            _sync_basic_info->birth_month,
+            _sync_basic_info->birth_day,
+            _sync_basic_info->constellation,
+            _sync_basic_info->blood_types,
+            _sync_basic_info->sex,
+            _sync_basic_info->home_nation,
+            _sync_basic_info->home_pro,
+            _sync_basic_info->home_city,
+            _sync_basic_info->now_nation,
+            _sync_basic_info->now_pro,
+            _sync_basic_info->now_city
+           );
+    write(1, out_buffer, proto_length + 13);
+
+    /* Insert to ZeroMQ */
+    /* If return 0 */
+    evhttp_send_reply( req, 200, "OK", NULL );
+    /* Else */
+    evhttp_send_error( req, HTTP_INTERNAL, 0 );
+
+CLEANUP:
+    free(out_buffer);
+    free(body_buff);
+
     return ;
 }
 

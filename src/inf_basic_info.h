@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../proto/community.pb-c.h"
 #include "receiver.h"
 #include "utils.h"
 
