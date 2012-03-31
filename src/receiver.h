@@ -46,9 +46,9 @@
 #include "inf_basic_info.h"
 #include "inf_header_info.h"
 #include "inf_education_info.h"
+#include "inf_employment_info.h"
 
 int receiver( void );
 static void other_cb( struct evhttp_request *req, void *arg );
-static void post_SMI_cb(struct evhttp_request *req, void *arg);
 
 #endif
