@@ -2,7 +2,7 @@ all:sync-userinfo
 
 CC=gcc -std=c99 -g
 EXEC=sync-userinfo
-OBJ=sync-userinfo.o receiver.o inf_basic_info.o inf_header_info.o utils.o ../proto/community.pb-c.c
+OBJ=sync-userinfo.o receiver.o inf_basic_info.o inf_header_info.o utils.o inf_education_info.o ../proto/community.pb-c.c
 
 ${EXEC}:${OBJ}
 	${CC} -o $@ $^ -levent -lcurl -lprotobuf-c
@@ -17,6 +17,9 @@ inf_basic_info.o:inf_basic_info.c
 	${CC} -c $<
 
 inf_header_info.o:inf_header_info.c
+	${CC} -c $<
+
+inf_education_info.o:inf_education_info.c
 	${CC} -c $<
 
 utils.o:utils.c

@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  inf_basic_info.c
+ *       Filename:  inf_educatoin_info.c
  *
- *    Description:  Sync user basic information call back
+ *    Description:  Sync user education information call back
  *
  *        Version:  1.0
- *        Created:  03/30/2012 05:53:06 PM
+ *        Created:  03/31/2012 07:56:27 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,7 +16,7 @@
  * =====================================================================================
  */
 
-#include "inf_basic_info.h"
+#include "inf_education_info.h"
 
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
@@ -24,7 +24,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t proto_length;
     unsigned char *body_buff = NULL;
     struct evbuffer *http_buf;
-    Community__SyncBasicInfo *_sync_basic_info;
+    Community__SyncEducationInfo = *_sync_education_info;
 
 
     /* Only allow POST method */
@@ -50,33 +50,26 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t sz = evbuffer_remove( http_buf, body_buff, evbuf_length );
     assert( sz == evbuf_length );
 
-    /* Unpack SyncBasicInfo package */
-    _sync_basic_info =
-        community__sync_basic_info__unpack( NULL, evbuf_length, body_buff );
-    if( NULL == _sync_basic_info ) {
+    /* Unpack SyncEducationInfo package */
+    _sync_education_info =
+        community__sync_education_info__unpack(NULL, evbuf_length, body_buff);
+    if(NULL == _sync_education_info) {
         evhttp_send_error( req, HTTP_BADREQUEST, 0 );
         goto CLEANUP;
     }
 
     proto_length =
-        community__sync_basic_info__get_packed_size( _sync_basic_info );
+        community__sync_education_info__get_packed_size( _sync_education_info );
 
-    printf( "size:%d\t%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s\n",
-            proto_length,
-            _sync_basic_info->uid,
-            _sync_basic_info->birth_year,
-            _sync_basic_info->birth_month,
-            _sync_basic_info->birth_day,
-            _sync_basic_info->constellation,
-            _sync_basic_info->blood_types,
-            _sync_basic_info->sex,
-            _sync_basic_info->home_nation,
-            _sync_basic_info->home_pro,
-            _sync_basic_info->home_city,
-            _sync_basic_info->now_nation,
-            _sync_basic_info->now_pro,
-            _sync_basic_info->now_city
-           );
+    for(int i = 0; i < 2; i++) {
+        printf ( "%d,%s,%s,%d,%d\n",
+                _sync_education_info.education[i]->edu;
+                _sync_education_info.education[i]->school;
+                _sync_education_info.education[i]->department;
+                _sync_education_info.education[i]->class_;
+                _sync_education_info.education[i]->year;
+               );
+    }
     fflush(stdout);
 
     /* Insert to ZeroMQ */
@@ -87,7 +80,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    community__sync_basic_info__free_unpacked( _sync_basic_info, NULL );
+    community__sync_education_info__free_unpacked(_sync_education_info, NULL);
 
     return ;
 }
