@@ -39,7 +39,6 @@ main( int argc, char *argv[] ) {
     char now_city[] = "ChaoYang";
 
     Community__SyncBasicInfo sync_basic_info = COMMUNITY__SYNC_BASIC_INFO__INIT;
-    /*community__sync_basic_info__init(sync_basic_info);*/
 
     sync_basic_info.uid = uid;
 
@@ -72,76 +71,4 @@ main( int argc, char *argv[] ) {
 
     return EXIT_SUCCESS;
 }				/* ----------  end of function main  ---------- */
-
-static void 
-*xmalloc(size_t size) {
-  void *rv;
-  if (size == 0)
-    return NULL;
-  rv = malloc (size);
-  if (rv == NULL)
-    die ("out-of-memory allocating %u bytes", (unsigned) size);
-  return rv;
-}
-
-static void 
-*xrealloc(void *a, size_t size) {
-  void *rv;
-  if (size == 0)
-    {
-      free (a);
-      return NULL;
-    }
-  if (a == NULL)
-    return xmalloc (size);
-  rv = realloc (a, size);
-  if (rv == NULL)
-    die ("out-of-memory re-allocating %u bytes", (unsigned) size);
-  return rv;
-}
-
-static char
-*xstrdup(const char *str) {
-  if (str == NULL)
-    return NULL;
-  /*return strdup(str);*/
-  return strcpy (xmalloc (strlen (str) + 1), str);
-}
-
-static void
-die(const char *format, ...) {
-  va_list args;
-  va_start (args, format);
-  vfprintf (stderr, format, args);
-  va_end (args);
-  fprintf (stderr, "\n");
-  exit (1);
-}
-
-int
-http_post_pb(char *buf, size_t size, char *post_url) {
-    CURL *curl;
-    CURLcode res;
-
-    curl = curl_easy_init();
-
-    if(curl) {
-        curl_easy_setopt(curl, CURLOPT_URL,
-                post_url);
-
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, buf);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, size);
-
-        res = curl_easy_perform(curl);
-    }
-
-    if(res != 0) {
-        printf("post error!\n");
-        return -1;
-    }
-
-    curl_easy_cleanup(curl);
-
-    return 0;
-}
 

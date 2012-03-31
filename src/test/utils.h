@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test_user_basic_info.h
+ *       Filename:  utils.h
  *
- *    Description:  send user basic info to sync user system
+ *    Description:  utils for test
  *
  *        Version:  1.0
- *        Created:  03/29/2012 02:27:25 PM
+ *        Created:  03/31/2012 10:26:50 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,19 +16,16 @@
  * =====================================================================================
  */
 
-#ifndef _TEST_USER_BASIC_INFO_H_
-#define _TEST_USER_BASIC_INFO_H_
-
-#include <stdlib.h>
-#include <assert.h>
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include <stdarg.h>
+#include <curl/curl.h>
 
-#include "utils.h"
-
-#include "../../proto/community.pb-c.h"
-
-#endif
+void die(const char *format, ...);
+void *xmalloc(size_t size);
+void *xrealloc(void *a, size_t size);
+char *xstrdup(const char *str);
+int http_post_pb(char *buf, size_t size, char *post_url); 
 

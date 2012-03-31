@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test_user_basic_info.h
+ *       Filename:  test_user_header_info.h
  *
- *    Description:  send user basic info to sync user system
+ *    Description:  send user header info to sync user system
  *
  *        Version:  1.0
- *        Created:  03/29/2012 02:27:25 PM
+ *        Created:  03/31/2012 10:32:34 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,8 +16,8 @@
  * =====================================================================================
  */
 
-#ifndef _TEST_USER_BASIC_INFO_H_
-#define _TEST_USER_BASIC_INFO_H_
+#ifndef _TEST_USER_HEADER_INFO_H_
+#define _TEST_USER_HEADER_INFO_H_
 
 #include <stdlib.h>
 #include <assert.h>
