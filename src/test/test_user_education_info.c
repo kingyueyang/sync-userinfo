@@ -32,9 +32,9 @@ main( int argc, char *argv[] ) {
     Community__Education **educations;
     educations = xmalloc(sizeof(Community__Education) * 2);
 
-    for(int i = 0; i < 2; i++) {
-        educations[i] = xmalloc(sizeof(Community__Education));
-        community__education__init(educations[i]);
+    for( int i = 0; i < 2; i++ ) {
+        educations[i] = xmalloc( sizeof(Community__Education) );
+        community__education__init( educations[i] );
         educations[i]->edu = edu[i];
         educations[i]->school = school[i];
         educations[i]->department = department[i];
@@ -57,7 +57,7 @@ main( int argc, char *argv[] ) {
     assert( sync_education_info_size == rc_size );
 
     char *server_url = "http://127.0.0.1:8080/synceducationinfo";
-    http_post_pb(sync_education_info_buff, rc_size, server_url);
+    http_post_pb( sync_education_info_buff, rc_size, server_url );
 
     return EXIT_SUCCESS;
 }				/* ----------  end of function main  ---------- */
