@@ -1,0 +1,2 @@
+1. user basic information both value of type int32_t equal 0 when packed
+2. server crash when uppack return equal NULL
