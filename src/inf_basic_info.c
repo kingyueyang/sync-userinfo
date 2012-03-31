@@ -55,6 +55,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         community__sync_basic_info__unpack(NULL, evbuf_length, body_buff);
     if( NULL == _sync_basic_info ) {
         evhttp_send_error( req, HTTP_BADREQUEST, 0 );
+        goto CLEANUP;
         return ;
     }
 
