@@ -26,7 +26,7 @@
 #include <ctype.h>
 #include <stdarg.h>
 
-#include "utils.h"
+#include "../utils.h"
 
 #include "../../proto/community.pb-c.h"
 

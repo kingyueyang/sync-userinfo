@@ -21,6 +21,11 @@
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
     fprintf(stdout, "SBI\n");
+    size_t length;
+    struct evbuffer *http_buf;
+    http_buf = evhttp_request_get_input_buffer(req);
+    length = evbuffer_get_length(http_buf);
+
     evhttp_send_reply(req, 200, "OK", NULL);
     return ;
 }

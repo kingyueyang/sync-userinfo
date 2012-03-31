@@ -3,8 +3,8 @@ all:test_user_basic_info test_user_header_info
 CC=gcc -std=c99 -g
 PROTO=../../proto
 
-utils.o:utils.c
-	${CC} -c $<
+utils.o:../utils.c
+	${CC} -c -o $@ $<
 
 test_user_basic_info:test_user_basic_info.o utils.o ${PROTO}/community.pb-c.c
 	${CC} -o $@ $^ -lprotobuf-c -lcurl

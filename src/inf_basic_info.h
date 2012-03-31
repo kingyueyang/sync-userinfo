@@ -23,6 +23,7 @@
 #include <stdlib.h>
 
 #include "receiver.h"
+#include "utils.h"
 
 void post_SBI_cb(struct evhttp_request *req, void *arg);
 
