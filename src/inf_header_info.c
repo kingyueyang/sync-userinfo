@@ -52,15 +52,14 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
     /* Unpack SyncHeaderInfo package */
     _sync_header_info =
-        community__sync_header_info__unpack(NULL, evbuf_length, body_buff);
+        community__sync_header_info__unpack( NULL, evbuf_length, body_buff );
     if( NULL == _sync_header_info ) {
         evhttp_send_error( req, HTTP_BADREQUEST, 0 );
         goto CLEANUP;
-        return ;
     }
 
     proto_length =
-        community__sync_header_info__get_packed_size(_sync_header_info);
+        community__sync_header_info__get_packed_size( _sync_header_info );
 
     printf( "size:%d\t%d,%d\n",
             proto_length,
@@ -77,6 +76,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
+    community__sync_header_info__free_unpacked(_sync_header_info, NULL);
 
     return ;
 }

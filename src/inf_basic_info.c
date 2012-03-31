@@ -52,11 +52,10 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
     /* Unpack SyncBasicInfo package */
     _sync_basic_info =
-        community__sync_basic_info__unpack(NULL, evbuf_length, body_buff);
+        community__sync_basic_info__unpack( NULL, evbuf_length, body_buff );
     if( NULL == _sync_basic_info ) {
         evhttp_send_error( req, HTTP_BADREQUEST, 0 );
         goto CLEANUP;
-        return ;
     }
 
     proto_length =
@@ -88,6 +87,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
+    community__sync_basic_info__free_unpacked(_sync_basic_info, NULL);
 
     return ;
 }
