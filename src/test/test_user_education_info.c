@@ -54,7 +54,7 @@ main( int argc, char *argv[] ) {
         community__sync_education_info__pack( &sync_education_info, sync_education_info_buff );
     assert( sync_education_info_size == rc_size );
 
-    char *server_url = "http://127.0.0.1:8080/syncbasicinfo";
+    char *server_url = "http://127.0.0.1:8080/synceducationinfo";
     http_post_pb(sync_education_info_buff, rc_size, server_url);
 
     return EXIT_SUCCESS;
