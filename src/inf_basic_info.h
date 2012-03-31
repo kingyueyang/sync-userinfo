@@ -26,6 +26,9 @@
 #include "receiver.h"
 #include "utils.h"
 
+/* 13 = comma  * 12 and '\0' */
+#define	BASIC_OFFSET 13		/* offset in output buff */
+
 void post_SBI_cb(struct evhttp_request *req, void *arg);
 
 #endif

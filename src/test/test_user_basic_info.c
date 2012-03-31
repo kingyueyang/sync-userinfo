@@ -65,7 +65,7 @@ main( int argc, char *argv[] ) {
     size_t rc_size = 
         community__sync_basic_info__pack(&sync_basic_info, sync_basic_info_buff);
     assert(sync_basic_info_size == rc_size);
-#if 1
+#if 0
     Community__SyncBasicInfo *test;
     test = community__sync_basic_info__unpack(NULL, rc_size, sync_basic_info_buff);
     printf ( "%d\n", test->uid);

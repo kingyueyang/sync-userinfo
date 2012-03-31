@@ -17,14 +17,12 @@
  */
 
 #include "inf_basic_info.h"
-#include <assert.h>
 
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t evbuf_length;
     size_t proto_length;
     unsigned char *body_buff = NULL;
-    unsigned char *out_buffer = NULL;
     struct evbuffer *http_buf;
     Community__SyncBasicInfo *_sync_basic_info;
 
@@ -62,14 +60,9 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
     proto_length =
         community__sync_basic_info__get_packed_size(_sync_basic_info);
-    /* 13 = comma * 12 and '\0' */
-    out_buffer = (unsigned char *)xmalloc( proto_length + 13);
-    if( NULL == out_buffer) {
-        evhttp_send_error( req, HTTP_INTERNAL, 0 );
-        return ;
-    }
 
-    sprintf( out_buffer, "%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s\n",
+    printf( "size:%d\t%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s\n",
+            proto_length,
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
@@ -84,16 +77,15 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->now_pro,
             _sync_basic_info->now_city
            );
-    write(1, out_buffer, proto_length + 13);
+    fflush(stdout);
 
     /* Insert to ZeroMQ */
     /* If return 0 */
     evhttp_send_reply( req, 200, "OK", NULL );
     /* Else */
-    evhttp_send_error( req, HTTP_INTERNAL, 0 );
+    /*evhttp_send_error( req, HTTP_INTERNAL, 0 );*/
 
 CLEANUP:
-    xfree(out_buffer);
     xfree(body_buff);
 
     return ;

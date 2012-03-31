@@ -26,6 +26,7 @@
 void die(const char *format, ...);
 void *xmalloc(size_t size);
 void *xrealloc(void *a, size_t size);
+void xfree( void *p);
 char *xstrdup(const char *str);
 int http_post_pb(char *buf, size_t size, char *post_url); 
 
