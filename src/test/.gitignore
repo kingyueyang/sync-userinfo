@@ -1,1 +1,4 @@
 *.o
+test_user_basic_info
+test_user_header_info
+test_user_education_info
