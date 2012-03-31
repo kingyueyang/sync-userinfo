@@ -99,13 +99,6 @@ other_cb(struct evhttp_request *req, void *arg) {
 }
 
 static void
-post_SEI_cb(struct evhttp_request *req, void *arg) {
-    fprintf(stdout, "SEI\n");
-    evhttp_send_reply(req, 200, "OK", NULL);
-    return ;
-}
-
-static void
 post_SMI_cb(struct evhttp_request *req, void *arg) {
     fprintf(stdout, "SMI\n");
     evhttp_send_reply(req, 200, "OK", NULL);
