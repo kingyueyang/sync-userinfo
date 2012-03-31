@@ -21,6 +21,7 @@
 int
 main( int argc, char *argv[] ) {
     size_t sync_education_info_size;
+    int64_t uid = 1057346345;
     int32_t edu[] = {2, 3};
     char school[][16] = {"junior school", "senior school"};
     char department[][16] = {"information", "math"};
@@ -43,6 +44,7 @@ main( int argc, char *argv[] ) {
 
     Community__SyncEducationInfo sync_education_info =
         COMMUNITY__SYNC_EDUCATION_INFO__INIT;
+    sync_education_info.uid = uid;
     sync_education_info.n_educations = 2;
     sync_education_info.educations = educations;
 

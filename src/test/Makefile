@@ -29,3 +29,4 @@ clean:
 	rm -f *.o
 	rm -f test_user_basic_info
 	rm -f test_user_header_info
+	rm -f test_user_education_info

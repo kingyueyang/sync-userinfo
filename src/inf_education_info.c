@@ -61,6 +61,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_education_info__get_packed_size( _sync_education_info );
 
+    printf( "uid:%d\n",_sync_education_info->uid );
     for(int i = 0; i < 2; i++) {
         printf ( "%d,%s,%s,%d,%d\n",
                 _sync_education_info->educations[i]->edu,
