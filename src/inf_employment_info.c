@@ -82,7 +82,9 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    community__sync_employment_info__free_unpacked(_sync_employment_info, NULL);
+    if(_sync_employment_info) {
+        community__sync_employment_info__free_unpacked(_sync_employment_info, NULL);
+    }
 
     return ;
 }

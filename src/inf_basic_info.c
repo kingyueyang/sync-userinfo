@@ -87,7 +87,9 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    community__sync_basic_info__free_unpacked( _sync_basic_info, NULL );
+    if(_sync_basic_info) {
+        community__sync_basic_info__free_unpacked( _sync_basic_info, NULL );
+    }
 
     return ;
 }

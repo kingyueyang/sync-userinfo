@@ -81,7 +81,9 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    community__sync_education_info__free_unpacked(_sync_education_info, NULL);
+    if(_sync_education_info) {
+        community__sync_education_info__free_unpacked(_sync_education_info, NULL);
+    }
 
     return ;
 }

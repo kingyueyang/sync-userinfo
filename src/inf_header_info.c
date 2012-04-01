@@ -76,7 +76,9 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    community__sync_header_info__free_unpacked(_sync_header_info, NULL);
+    if(_sync_header_info) {
+        community__sync_header_info__free_unpacked(_sync_header_info, NULL);
+    }
 
     return ;
 }
