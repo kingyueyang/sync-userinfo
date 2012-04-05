@@ -61,21 +61,26 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_header_info__get_packed_size( _sync_header_info );
 
-    printf( "size:%d\t%d,%d\n",
-            proto_length,
+    char *text_buf = xmalloc( proto_length + 1 );
+    if(NULL == text_buf) {
+        evhttp_send_error( req, HTTP_INTERNAL, 0 );
+        goto CLEANUP;
+    }
+
+    sprintf( text_buf, "%d,%d",
             _sync_header_info->uid,
             _sync_header_info->header
            );
-    fflush(stdout);
+    printf ( "%s\n", text_buf );
 
-    /* Insert to ZeroMQ */
-    /* If return 0 */
+    /* Insert to Queue */
+    /*add_queue_item( queue, text_buf, NULL, proto_length );*/
+
     evhttp_send_reply( req, 200, "OK", NULL );
-    /* Else */
-    /*evhttp_send_error( req, HTTP_INTERNAL, 0 );*/
 
 CLEANUP:
     xfree(body_buff);
+    xfree(text_buf);
     if(_sync_header_info) {
         community__sync_header_info__free_unpacked(_sync_header_info, NULL);
     }

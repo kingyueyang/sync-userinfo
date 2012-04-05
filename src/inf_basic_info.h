@@ -29,5 +29,7 @@
 
 void post_SBI_cb(struct evhttp_request *req, void *arg);
 
+extern QUEUE *queue;
+
 #endif
 

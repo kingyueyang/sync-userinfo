@@ -29,7 +29,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
 
     /* Only allow POST method */
     if( EVHTTP_REQ_POST != evhttp_request_get_command(req) ) {
-        evhttp_send_error(req, HTTP_BADMETHOD, NULL);
+        evhttp_send_error( req, HTTP_BADMETHOD, 0 );
         return ;
     }
 
@@ -61,9 +61,16 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_employment_info__get_packed_size( _sync_employment_info );
 
-    printf( "uid:%d\n",_sync_employment_info->uid );
-    for(int i = 0; i < 2; i++) {
-        printf ( "%d,%d,%d,%d,%s,%s\n",
+    char *text_buf = xmalloc( proto_length + 1 );
+    char *sub_text_buf = xmalloc( proto_length + 1 );
+    if(NULL == text_buf || NULL == sub_text_buf ) {
+        evhttp_send_error( req, HTTP_INTERNAL, 0 );
+        goto CLEANUP;
+    }
+
+    printf( "%d",_sync_employment_info->uid );
+    for(int i = 0; i < _sync_employment_info->n_employments; i++) {
+        sprintf ( sub_text_buf, ";%d,%d,%d,%d,%s,%s",
                 _sync_employment_info->employments[i]->begin_year,
                 _sync_employment_info->employments[i]->begin_month,
                 _sync_employment_info->employments[i]->end_year,
@@ -71,17 +78,19 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
                 _sync_employment_info->employments[i]->company,
                 _sync_employment_info->employments[i]->post
                );
+        strcat(text_buf, sub_text_buf);
     }
-    fflush(stdout);
+    printf ( "%s\n", text_buf );
 
-    /* Insert to ZeroMQ */
-    /* If return 0 */
+    /* Insert to Queue*/
+    /*add_queue_item( queue, text_buf, NULL, proto_length );*/
+
     evhttp_send_reply( req, 200, "OK", NULL );
-    /* Else */
-    /*evhttp_send_error( req, HTTP_INTERNAL, 0 );*/
 
 CLEANUP:
     xfree(body_buff);
+    xfree(text_buf);
+    xfree(sub_text_buf);
     if(_sync_employment_info) {
         community__sync_employment_info__free_unpacked(_sync_employment_info, NULL);
     }

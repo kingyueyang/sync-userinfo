@@ -18,8 +18,6 @@
 
 #include "inf_basic_info.h"
 
-extern QUEUE *queue;
-
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t evbuf_length;
@@ -63,8 +61,13 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_basic_info__get_packed_size( _sync_basic_info );
 
-    printf( "size:%d\t%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s\n",
-            proto_length,
+    char *text_buf = xmalloc( proto_length + 1 );
+    if(NULL == text_buf) {
+        evhttp_send_error( req, HTTP_INTERNAL, 0 );
+        goto CLEANUP;
+    }
+
+    sprintf( text_buf, "%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
@@ -79,20 +82,17 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->now_pro,
             _sync_basic_info->now_city
            );
-    fflush(stdout);
+    printf ( "%s\n", text_buf );
 
     /* Insert to Queue*/
-    add_queue_item(queue, "ok", NULL, (size_t)3);
-    printf("get:%s\n", get_queue_item(queue)->action);
+    /*add_queue_item( queue, text_buf, NULL, proto_length );*/
 
-    /* If return 0 */
     evhttp_send_reply( req, 200, "OK", NULL );
-    /* Else */
-    /*evhttp_send_error( req, HTTP_INTERNAL, 0 );*/
 
 CLEANUP:
-    xfree(body_buff);
-    if(_sync_basic_info) {
+    xfree( body_buff );
+    xfree( text_buf );
+    if( _sync_basic_info ) {
         community__sync_basic_info__free_unpacked( _sync_basic_info, NULL );
     }
 
