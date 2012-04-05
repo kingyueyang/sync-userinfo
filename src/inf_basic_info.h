@@ -25,6 +25,7 @@
 #include "../proto/community.pb-c.h"
 #include "receiver.h"
 #include "utils.h"
+#include "queue.h"
 
 void post_SBI_cb(struct evhttp_request *req, void *arg);
 

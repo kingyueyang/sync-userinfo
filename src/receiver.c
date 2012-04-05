@@ -20,6 +20,8 @@
 
 extern struct syncServer server;
 
+QUEUE *queue;
+
 int
 receiver( void ) {
     printf( "receiver\n" );
@@ -48,6 +50,9 @@ receiver( void ) {
         fprintf(stderr, "couldn't create evhttp. Exiting.\n");
         return 1;
     }
+
+    /* Ininate queue */
+    queue = initialize_queue();
 
     /*
      * The path /syncbasicinfo only support post mothod, 

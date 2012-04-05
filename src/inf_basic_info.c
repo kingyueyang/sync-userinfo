@@ -18,6 +18,8 @@
 
 #include "inf_basic_info.h"
 
+extern QUEUE *queue;
+
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t evbuf_length;
@@ -79,7 +81,10 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
            );
     fflush(stdout);
 
-    /* Insert to ZeroMQ */
+    /* Insert to Queue*/
+    add_queue_item(queue, "ok", NULL, (size_t)3);
+    printf("get:%s\n", get_queue_item(queue)->action);
+
     /* If return 0 */
     evhttp_send_reply( req, 200, "OK", NULL );
     /* Else */
