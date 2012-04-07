@@ -25,17 +25,21 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/types.h>
+#include <apr-1/apr_queue.h>
 
 #include "receiver.h"
+
+#define	QUEUE_SIZE 128			/*  */
 
 struct syncServer {
     char *receiverIP;
     int receiverPort;
 };
 
-void initServerConfig( void );
-void xdaemon( void );
-int createthread( );
+void initServerConfig(void);
+void xdaemon(void);
+void create_queue(void);
+int createthread();
 
 extern struct syncServer server;
 

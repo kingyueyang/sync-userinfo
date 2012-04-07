@@ -20,13 +20,19 @@
 
 struct syncServer server;
 
+apr_pool_t *pool = NULL;
+apr_queue_t *queue;
+
 int
-main( int argc, char *argv[] ) {
+main(int argc, char *argv[]) {
+    /* Create one new process by daemon module, if 0 former process return 0 */
+    xdaemon();
+
     /* Load configure files, initate server */
     initServerConfig();
 
-    /* Create one new process by daemon module, if 0 former process return 0 */
-    xdaemon();
+    /* Create global queue */
+    create_queue();
 
     /*  Create there process: receiver, queue, mysql-connector */
     createthread();
@@ -39,7 +45,7 @@ main( int argc, char *argv[] ) {
 }
 
 void
-initServerConfig( void ) {
+initServerConfig(void) {
     server.receiverIP = "127.0.0.1";
     server.receiverPort = 8080;
 
@@ -47,13 +53,29 @@ initServerConfig( void ) {
 }
 
 void
-xdaemon( void ) {
+xdaemon(void) {
 
     return ;
 }
 
+void
+create_queue(void) {
+    apr_status_t rv;
+    if(apr_pool_initialize()) {
+        exit(1);
+    }
+    if(apr_pool_create(&pool, NULL)) {
+        exit(1);
+    }
+    if(apr_queue_create(&queue, QUEUE_SIZE, pool)) {
+        exit(1);
+    }
+
+    return;
+}
+
 int 
-createthread( ) {
+createthread() {
     /*rt = receiver();*/
     /*rt = msg_queue_server();*/
     int rc;
@@ -62,7 +84,9 @@ createthread( ) {
     rc = pthread_create(&request_tid, NULL, receiver, NULL);
     assert(0 == rc);
 
-
+    while(1) {
+        sleep(5);
+    }
 
     return 0;
 }
