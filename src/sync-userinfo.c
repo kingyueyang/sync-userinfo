@@ -20,9 +20,6 @@
 
 struct syncServer server;
 
-apr_pool_t *arp_pool = NULL;
-apr_queue_t *apr_queue;
-
 int
 main( int argc, char *argv[] ) {
     /* Load configure files, initate server */
@@ -64,11 +61,11 @@ dofork( size_t fork_no, int flag ) {
     if( pid < 0 )
         return -1;
     else if( 0 == pid ) {
+        /* Hppt Receiver Process */
         printf("I am child\n");
         rt = receiver();
         return rt;
     } else {
-        /* Wirte down the PID */
         printf("I am farther,child is %d\n",pid);
     }
 
@@ -77,10 +74,10 @@ dofork( size_t fork_no, int flag ) {
         return -1;
     else if( 0 == pid ) {
         printf("I am child\n");
+        /* MessageQueue Server */
         rt = msg_queue_server();
         return rt;
     } else {
-        /* Wirte down the PID */
         printf("I am farther,child is %d\n",pid);
     }
 
