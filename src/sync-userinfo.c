@@ -61,7 +61,7 @@ dofork( size_t fork_no, int flag ) {
     if( pid < 0 )
         return -1;
     else if( 0 == pid ) {
-        /* Hppt Receiver Process */
+        /* Http Receiver Process */
         printf("I am child\n");
         rt = receiver();
         return rt;
@@ -75,7 +75,7 @@ dofork( size_t fork_no, int flag ) {
     else if( 0 == pid ) {
         printf("I am child\n");
         /* MessageQueue Server */
-        rt = msg_queue_server();
+        /*rt = msg_queue_server();*/
         return rt;
     } else {
         printf("I am farther,child is %d\n",pid);

@@ -23,12 +23,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/types.h>
 
-#include <apr-1/apr_queue.h>
-
 #include "receiver.h"
-#include "msg_queue.h"
 
 struct syncServer {
     char *receiverIP;
