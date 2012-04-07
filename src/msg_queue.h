@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  inf_basic_info.h
+ *       Filename:  msg_queue.h
  *
- *    Description:  Sync user basic information call back
+ *    Description:  message queue
  *
  *        Version:  1.0
- *        Created:  03/30/2012 05:53:33 PM
+ *        Created:  04/05/2012 04:05:38 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,17 +16,15 @@
  * =====================================================================================
  */
 
-#ifndef _INF_BASIC_INFO_H_
-#define _INF_BASIC_INFO_H_
-
+#ifndef _MSG_QUEUE_H_
+#define _MSG_QUEUE_H_
+#include <zmq.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
-#include "../proto/community.pb-c.h"
 #include "receiver.h"
-#include "utils.h"
 
-void post_SBI_cb(struct evhttp_request *req, void *arg);
+int msg_queue_server(void);
 
 #endif
-

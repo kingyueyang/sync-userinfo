@@ -25,7 +25,10 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+#include <apr-1/apr_queue.h>
+
 #include "receiver.h"
+#include "msg_queue.h"
 
 struct syncServer {
     char *receiverIP;

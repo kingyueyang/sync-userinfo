@@ -69,7 +69,8 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     }
 
     sprintf( text_buf, "%d",_sync_education_info->uid );
-    for(int i = 0; i < _sync_education_info->n_educations; i++) {
+    int i;
+    for(i = 0; i < _sync_education_info->n_educations; i++) {
         sprintf ( sub_text_buf, ";%d,%s,%s,%d,%d",
                 _sync_education_info->educations[i]->edu,
                 _sync_education_info->educations[i]->school,
@@ -80,9 +81,6 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         strcat(text_buf, sub_text_buf);
     }
     printf ( "%s\n", text_buf );
-
-    /* Insert to Queue */
-    add_queue_item( queue, text_buf, NULL, proto_length );
 
     evhttp_send_reply( req, 200, "OK", NULL );
 

@@ -73,9 +73,6 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
            );
     printf ( "%s\n", text_buf );
 
-    /* Insert to Queue */
-    add_queue_item( queue, text_buf, NULL, proto_length );
-
     evhttp_send_reply( req, 200, "OK", NULL );
 
 CLEANUP:

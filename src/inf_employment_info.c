@@ -69,7 +69,8 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     }
 
     printf( "%d",_sync_employment_info->uid );
-    for(int i = 0; i < _sync_employment_info->n_employments; i++) {
+    int i;
+    for(i = 0; i < _sync_employment_info->n_employments; i++) {
         sprintf ( sub_text_buf, ";%d,%d,%d,%d,%s,%s",
                 _sync_employment_info->employments[i]->begin_year,
                 _sync_employment_info->employments[i]->begin_month,
@@ -81,9 +82,6 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         strcat(text_buf, sub_text_buf);
     }
     printf ( "%s\n", text_buf );
-
-    /* Insert to Queue*/
-    add_queue_item( queue, text_buf, NULL, proto_length );
 
     evhttp_send_reply( req, 200, "OK", NULL );
 
