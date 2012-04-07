@@ -1,6 +1,6 @@
 all:sync-userinfo
 
-LIB=-levent -lcurl -lprotobuf-c -lzmq -lpthread -laprutil-1 -lapr-1
+LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1
 #CC=gcc -std=c99 -g
 CC=gcc -g
 EXEC=sync-userinfo

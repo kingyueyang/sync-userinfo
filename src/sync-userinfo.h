@@ -35,7 +35,7 @@ struct syncServer {
 
 void initServerConfig( void );
 void xdaemon( void );
-int dofork( size_t fork_no, int flag );
+int createthread( );
 
 extern struct syncServer server;
 

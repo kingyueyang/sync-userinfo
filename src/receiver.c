@@ -18,8 +18,8 @@
 
 #include "receiver.h"
 
-int
-receiver( void ) {
+void *
+receiver( void *args) {
     printf( "receiver\n" );
     printf ( "%s:%d\n", server.receiverIP, server.receiverPort );
 
@@ -31,20 +31,20 @@ receiver( void ) {
 
     /* As you konw */
     if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-        return (1);
+        return ((void *)1);
 
     /* Create a new base evObject */
     base = event_base_new();
     if (!base) {
         fprintf(stderr, "Couldn't create an event_base: exiting\n");
-        return 1;
+        return ((void *)1);
     }
 
     /* Create a new evhttp object to handle requests. */
     http = evhttp_new(base);
     if (!http) {
         fprintf(stderr, "couldn't create evhttp. Exiting.\n");
-        return 1;
+        return ((void *)1);
     }
 
     /*
@@ -81,12 +81,12 @@ receiver( void ) {
     if (!handle) {
         fprintf(stderr, "couldn't bind to port %d. Exiting.\n",
                 (int)port);
-        return 1;
+        return ((void *)1);
     }
 
     event_base_dispatch(base);
 
-    return EXIT_SUCCESS;
+    return ((void *)0);
 }
 
 static void

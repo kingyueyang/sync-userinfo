@@ -29,7 +29,7 @@ main( int argc, char *argv[] ) {
     xdaemon();
 
     /*  Create there process: receiver, queue, mysql-connector */
-    dofork(3, 0);
+    createthread();
 
     /*
      * Server fall into Looooop
@@ -53,33 +53,16 @@ xdaemon( void ) {
 }
 
 int 
-dofork( size_t fork_no, int flag ) {
-    pid_t pid=0;
-    int rt;
+createthread( ) {
+    /*rt = receiver();*/
+    /*rt = msg_queue_server();*/
+    int rc;
+    pthread_t receiver_tid, request_tid;
 
-    pid = fork( );
-    if( pid < 0 )
-        return -1;
-    else if( 0 == pid ) {
-        /* Http Receiver Process */
-        printf("I am child\n");
-        rt = receiver();
-        return rt;
-    } else {
-        printf("I am farther,child is %d\n",pid);
-    }
+    rc = pthread_create(&request_tid, NULL, receiver, NULL);
+    assert(0 == rc);
 
-    pid = fork( );
-    if( pid < 0 )
-        return -1;
-    else if( 0 == pid ) {
-        printf("I am child\n");
-        /* MessageQueue Server */
-        /*rt = msg_queue_server();*/
-        return rt;
-    } else {
-        printf("I am farther,child is %d\n",pid);
-    }
+
 
     return 0;
 }
