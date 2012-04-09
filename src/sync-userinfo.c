@@ -17,6 +17,9 @@
  */
 
 #include "sync-userinfo.h"
+#include <arpa/inet.h>
+
+void * request(void *args);
 
 struct syncServer server;
 
@@ -84,10 +87,25 @@ createthread() {
     rc = pthread_create(&request_tid, NULL, receiver, NULL);
     assert(0 == rc);
 
+    rc = pthread_create(&request_tid, NULL, request, NULL);
+    assert(0 == rc);
+
     while(1) {
         sleep(5);
     }
 
     return 0;
+}
+
+
+void *
+request(void *args) {
+    while(1) {
+        char *p = xmalloc(128);
+        apr_queue_pop(queue, (void *)&p);
+        printf ( "pop:%s\n", p );
+    }
+
+    return ((void *)0);
 }
 

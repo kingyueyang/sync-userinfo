@@ -17,7 +17,6 @@ sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makef
   inf_education_info.c
   inf_employment_info.c
   inf_header_info.c
-  msg_queue.c
   receiver.c
   sync-userinfo.c
   utils.c
@@ -25,7 +24,6 @@ sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makef
   inf_education_info.h
   inf_employment_info.h
   inf_header_info.h
-  msg_queue.h
   receiver.h
   sync-userinfo.h
   utils.h

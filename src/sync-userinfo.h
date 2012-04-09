@@ -29,7 +29,7 @@
 
 #include "receiver.h"
 
-#define	QUEUE_SIZE 128			/*  */
+#define	QUEUE_SIZE 10240 /* Receiver Queue */
 
 struct syncServer {
     char *receiverIP;
