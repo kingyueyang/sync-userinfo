@@ -25,7 +25,7 @@ main( int argc, char *argv[] ) {
     int32_t edu[] = {2, 3};
     char school[][16] = {"junior school", "senior school"};
     char department[][16] = {"information", "math"};
-    int32_t class[] = {1, 2};
+    int32_t class_[] = {1, 2};
     int32_t year[] = {2000, 2003};
 
     /* Education packages */
@@ -38,7 +38,7 @@ main( int argc, char *argv[] ) {
         educations[i]->edu = edu[i];
         educations[i]->school = school[i];
         educations[i]->department = department[i];
-        educations[i]->class_ = class[i];
+        educations[i]->class_ = class_[i];
         educations[i]->year = year[i];
     }
 

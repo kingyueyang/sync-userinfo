@@ -69,7 +69,8 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
-    printf("%d",_sync_employment_info->uid);
+    /* Type flag 4 */
+    sprintf(text_buf, "4:%d",_sync_employment_info->uid);
     int i;
     for(i = 0; i < _sync_employment_info->n_employments; i++) {
         sprintf (sub_text_buf, ";%d,%d,%d,%d,%s,%s",

@@ -28,6 +28,7 @@
 #include <apr-1/apr_queue.h>
 
 #include "receiver.h"
+#include "mysql_connector.h"
 
 #define	QUEUE_SIZE 10240 /* Receiver Queue */
 

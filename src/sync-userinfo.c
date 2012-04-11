@@ -19,8 +19,6 @@
 #include "sync-userinfo.h"
 #include <arpa/inet.h>
 
-void * request(void *args);
-
 struct syncServer server;
 
 apr_pool_t *pool = NULL;
@@ -79,15 +77,13 @@ create_queue(void) {
 
 int 
 createthread() {
-    /*rt = receiver();*/
-    /*rt = msg_queue_server();*/
     int rc;
     pthread_t receiver_tid, request_tid;
 
     rc = pthread_create(&request_tid, NULL, receiver, NULL);
     assert(0 == rc);
 
-    rc = pthread_create(&request_tid, NULL, request, NULL);
+    rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
     assert(0 == rc);
 
     while(1) {
@@ -95,17 +91,5 @@ createthread() {
     }
 
     return 0;
-}
-
-
-void *
-request(void *args) {
-    while(1) {
-        char *p = xmalloc(128);
-        apr_queue_pop(queue, (void *)&p);
-        printf ( "pop:%s\n", p );
-    }
-
-    return ((void *)0);
 }
 

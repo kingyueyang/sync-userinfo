@@ -68,7 +68,8 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
-    sprintf(text_buf, "%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
+    /* Type flag 1 */
+    sprintf(text_buf, "1:%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
