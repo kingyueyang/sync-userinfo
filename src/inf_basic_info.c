@@ -62,14 +62,14 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_basic_info__get_packed_size(_sync_basic_info);
 
-    char *text_buf = xmalloc(proto_length + 1);
+    char *text_buf = xmalloc(proto_length + 15);
     if(NULL == text_buf) {
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
 
     /* Type flag 1 */
-    sprintf(text_buf, "1:%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
+    sprintf( text_buf, "1:%d,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
@@ -86,7 +86,8 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             );
     printf ("%s\n", text_buf);
 
-    push_rv = apr_queue_trypush(queue, "basic");
+    push_rv = apr_queue_trypush(queue, text_buf);
+    /*push_rv = apr_queue_trypush(queue, "basic");*/
     if(APR_SUCCESS != push_rv) {
         /* TODO: Dual error */
     }
@@ -95,7 +96,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    xfree(text_buf);
+    /* free text_buf when after queue pop */
     if(_sync_basic_info) {
         community__sync_basic_info__free_unpacked(_sync_basic_info, NULL);
     }

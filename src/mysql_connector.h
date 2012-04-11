@@ -24,6 +24,12 @@
 #include <string.h>
 #include <mysql/mysql.h>
 
+#include "receiver.h"
+#include "utils.h"
+
 void *mysql_connector(void *args);
+
+extern apr_pool_t *pool;
+extern apr_queue_t *queue;
 
 #endif

@@ -62,7 +62,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_employment_info__get_packed_size(_sync_employment_info);
 
-    char *text_buf = xmalloc(proto_length + 1);
+    char *text_buf = xmalloc(proto_length * 2);
     char *sub_text_buf = xmalloc(proto_length + 1);
     if(NULL == text_buf || NULL == sub_text_buf) {
         evhttp_send_error(req, HTTP_INTERNAL, 0);
@@ -85,7 +85,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     }
     printf ("%s\n", text_buf);
 
-    push_rv = apr_queue_trypush(queue, "emp");
+    push_rv = apr_queue_trypush(queue, text_buf);
     if(APR_SUCCESS != push_rv) {
         /* TODO: Dual error */
     }
@@ -94,7 +94,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    xfree(text_buf);
+    /* free text_buf when after queue pop */
     xfree(sub_text_buf);
     if(_sync_employment_info) {
         community__sync_employment_info__free_unpacked(_sync_employment_info, NULL);

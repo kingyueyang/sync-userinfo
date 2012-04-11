@@ -62,7 +62,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_header_info__get_packed_size(_sync_header_info);
 
-    char *text_buf = xmalloc(proto_length + 1);
+    char *text_buf = xmalloc(proto_length + 4);
     if(NULL == text_buf) {
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
@@ -75,7 +75,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
           );
     printf ("%s\n", text_buf);
 
-    push_rv = apr_queue_trypush(queue, "header");
+    push_rv = apr_queue_trypush(queue, text_buf);
     if(APR_SUCCESS != push_rv) {
         /* TODO: Dual error */
     }
@@ -84,7 +84,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    xfree(text_buf);
+    /* free text_buf when after queue pop */
     if(_sync_header_info) {
         community__sync_header_info__free_unpacked(_sync_header_info, NULL);
     }

@@ -32,7 +32,6 @@ sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makef
   utils.h
   Makefile
   test=test {
-   client.c
    test_user_basic_info.c
    test_user_education_info.c
    test_user_employment_info.c

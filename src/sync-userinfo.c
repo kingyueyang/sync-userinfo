@@ -83,8 +83,12 @@ createthread() {
     rc = pthread_create(&request_tid, NULL, receiver, NULL);
     assert(0 == rc);
 
-    rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
-    assert(0 == rc);
+    int mysql_thread_no = 10;
+    int count;
+    for(count = 0; count < mysql_thread_no; count++) {
+        rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
+        assert(0 == rc);
+    }
 
     while(1) {
         sleep(5);
