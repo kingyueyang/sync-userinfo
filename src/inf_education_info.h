@@ -28,5 +28,8 @@
 
 void post_SEI_cb(struct evhttp_request *req, void *arg);
 
+extern apr_pool_t *pool;
+extern apr_queue_t *queue;
+
 #endif
 

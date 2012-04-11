@@ -1,0 +1,46 @@
+
+sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makefile" {
+ bin=bin {
+ }
+ conf=conf {
+ }
+ data=data {
+ }
+ log=log {
+ }
+ proto=proto {
+  community.pb-c.c
+  community.pb-c.h
+  community.proto
+ }
+ src=src {
+  inf_basic_info.c
+  inf_education_info.c
+  inf_employment_info.c
+  inf_header_info.c
+  mysql_connector.c
+  receiver.c
+  sync-userinfo.c
+  utils.c
+  inf_basic_info.h
+  inf_education_info.h
+  inf_employment_info.h
+  inf_header_info.h
+  mysql_connector.h
+  receiver.h
+  sync-userinfo.h
+  utils.h
+  Makefile
+  test=test {
+   test_user_basic_info.c
+   test_user_education_info.c
+   test_user_employment_info.c
+   test_user_header_info.c
+   test_user_basic_info.h
+   test_user_education_info.h
+   test_user_employment_info.h
+   test_user_header_info.h
+   Makefile
+  }
+ }
+}

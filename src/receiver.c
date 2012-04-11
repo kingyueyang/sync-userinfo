@@ -18,12 +18,10 @@
 
 #include "receiver.h"
 
-extern struct syncServer server;
-
-int
-receiver( void ) {
-    printf( "receiver\n" );
-    printf ( "%s:%d\n", server.receiverIP, server.receiverPort );
+void *
+receiver(void *args) {
+    printf("receiver\n");
+    printf ("%s:%d\n", server.receiverIP, server.receiverPort);
 
     struct event_base *base;
     struct evhttp *http;
@@ -32,21 +30,21 @@ receiver( void ) {
     unsigned short port = server.receiverPort;
 
     /* As you konw */
-    if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-        return (1);
+    if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+        return ((void *)1);
 
     /* Create a new base evObject */
     base = event_base_new();
-    if (!base) {
+    if(!base) {
         fprintf(stderr, "Couldn't create an event_base: exiting\n");
-        return 1;
+        return ((void *)1);
     }
 
     /* Create a new evhttp object to handle requests. */
     http = evhttp_new(base);
-    if (!http) {
+    if(!http) {
         fprintf(stderr, "couldn't create evhttp. Exiting.\n");
-        return 1;
+        return ((void *)1);
     }
 
     /*
@@ -83,12 +81,12 @@ receiver( void ) {
     if (!handle) {
         fprintf(stderr, "couldn't bind to port %d. Exiting.\n",
                 (int)port);
-        return 1;
+        return ((void *)1);
     }
 
     event_base_dispatch(base);
 
-    return EXIT_SUCCESS;
+    return ((void *)0);
 }
 
 static void

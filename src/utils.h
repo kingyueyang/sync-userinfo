@@ -16,6 +16,9 @@
  * =====================================================================================
  */
 
+#ifndef _UTILS_H_
+#define _UTILS_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -30,3 +33,4 @@ void xfree( void *p);
 char *xstrdup(const char *str);
 int http_post_pb(char *buf, size_t size, char *post_url); 
 
+#endif

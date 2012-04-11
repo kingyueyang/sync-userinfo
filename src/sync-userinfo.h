@@ -23,19 +23,26 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/types.h>
+#include <apr-1/apr_queue.h>
 
 #include "receiver.h"
+#include "mysql_connector.h"
+
+#define	QUEUE_SIZE 102400 /* Receiver Queue */
 
 struct syncServer {
     char *receiverIP;
     int receiverPort;
 };
 
-void initServerConfig( void );
-void xdaemon( void );
-int dofork( size_t fork_no, int flag );
+void initServerConfig(void);
+void xdaemon(void);
+void create_queue(void);
+int createthread();
 
 extern struct syncServer server;
 
 #endif
+

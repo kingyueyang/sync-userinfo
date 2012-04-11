@@ -22,9 +22,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../proto/community.pb-c.h"
 #include "receiver.h"
+#include "utils.h"
 
 void post_SHI_cb(struct evhttp_request *req, void *arg);
+
+extern apr_pool_t *pool;
+extern apr_queue_t *queue;
 
 #endif
 

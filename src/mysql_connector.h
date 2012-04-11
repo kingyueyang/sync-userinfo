@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  inf_basic_info.h
+ *       Filename:  mysql_connector.h
  *
- *    Description:  Sync user basic information call back
+ *    Description:  connect to mysql and execute query
  *
  *        Version:  1.0
- *        Created:  03/30/2012 05:53:33 PM
+ *        Created:  04/11/2012 10:56:59 AM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,20 +16,20 @@
  * =====================================================================================
  */
 
-#ifndef _INF_BASIC_INFO_H_
-#define _INF_BASIC_INFO_H_
+#ifndef _MYSQL_CONNECTOR_H_
+#define _MYSQL_CONNECTOR_H_
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <mysql/mysql.h>
 
-#include "../proto/community.pb-c.h"
 #include "receiver.h"
 #include "utils.h"
 
-void post_SBI_cb(struct evhttp_request *req, void *arg);
+void *mysql_connector(void *args);
 
 extern apr_pool_t *pool;
 extern apr_queue_t *queue;
 
 #endif
-
