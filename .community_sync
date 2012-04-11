@@ -1,5 +1,5 @@
 
-sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makefile" {
+community_sync=/home/yueyang/Workspace/C/community_sync CD=. filter="*.c *.h Makefile" {
  bin=bin {
  }
  conf=conf {
@@ -9,9 +9,6 @@ sync_userinfo=/home/yueyang/Workspace/C/sync-userinfo CD=. filter="*.c *.h Makef
  log=log {
  }
  proto=proto {
-  community.pb-c.c
-  community.pb-c.h
-  community.proto
  }
  src=src {
   inf_basic_info.c
