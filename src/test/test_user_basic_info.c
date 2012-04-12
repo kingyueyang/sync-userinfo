@@ -31,8 +31,8 @@ main( int argc, char *argv[] ) {
     int32_t sex = 1;
 
     char home_nation[] = "China";
-    char home_pro[] = "HeBei";
-    char home_city[] = "ShiJiaZhuang";
+    char home_pro[] = "ShanDong";
+    char home_city[] = "WeiHai";
 
     char now_nation[] = "China";
     char now_pro[] = "BeiJing";

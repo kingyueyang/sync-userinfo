@@ -21,7 +21,7 @@
 int
 main( int argc, char *argv[] ) {
     size_t sync_employment_info_size;
-    int64_t uid = 1057346346;
+    int64_t uid = 407902377;
     int32_t begin_year[] = {2003, 2006};
     int32_t begin_month[] = {02, 04};
     int32_t end_year[] = {2006, 2009};
