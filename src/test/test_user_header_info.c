@@ -20,7 +20,7 @@
 
 int
 main( int argc, char *argv[] ) {
-    int64_t uid = 1057346344;
+    int64_t uid = 407902377;
     int32_t header = 1;
 
     Community__SyncHeaderInfo sync_header_info = COMMUNITY__SYNC_HEADER_INFO__INIT;

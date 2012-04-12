@@ -21,7 +21,7 @@
 int
 main( int argc, char *argv[] ) {
     size_t sync_education_info_size;
-    int64_t uid = 1057346345;
+    int64_t uid = 407902377;
     int32_t edu[] = {2, 3};
     char school[][16] = {"junior school", "senior school"};
     char department[][16] = {"information", "math"};

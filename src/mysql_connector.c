@@ -129,7 +129,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 printf ( "mysql_rc:%d\n", mysql_query_rc );
             } else {
-                /* Dump to file */
+                /* TODO: Dump to file */
             }
 
             xfree(update_proto);
@@ -148,9 +148,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 printf ( "%d\n", mysql_query_rc );
             } else {
-                /* Dump to file */
-                /* fprintf(dump_file, "%s\n", update_proto); */
-                /* fflush(dump_file); */
+                /* TODO: Dump to file */
             }
 
             xfree(update_proto);
@@ -170,7 +168,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 printf ( "%d\n", mysql_query_rc );
             } else {
-                /* Dump to file */
+                /* TODO: Dump to file */
             }
 
             unsigned long long affect;
@@ -194,7 +192,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     printf ( "%d\n", mysql_query_rc );
                 } else {
-                    /* Dump to file */
+                    /* TODO: Dump to file */
                 }
             }
 
@@ -218,7 +216,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 printf ( "%d\n", mysql_query_rc );
             } else {
-                /* Dump to file */
+                /* TODO: Dump to file */
             }
 
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
@@ -240,7 +238,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     printf ( "%d\n", mysql_query_rc );
                 } else {
-                    /* Dump to file */
+                    /* TODO: Dump to file */
                 }
             }
             /* If not deltet, notiry real time */
