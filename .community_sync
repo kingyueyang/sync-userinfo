@@ -1,5 +1,5 @@
 
-community_sync=/home/yueyang/Workspace/C/community_sync CD=. filter="*.c *.h Makefile" {
+community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync CD=. filter="*.c *.h Makefile" {
  bin=bin {
  }
  conf=conf {
