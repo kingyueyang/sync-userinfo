@@ -35,13 +35,14 @@
 
 struct syncServer {
     char *receiverIP;
-    int receiverPort;
+    unsigned int receiverPort;
+    unsigned int mysql_thread;
 };
 
 int initServerConfig(void);
 int xdaemon(void);
 int create_queue(void);
-int createthread();
+void create_thread();
 
 extern struct syncServer server;
 extern log4c_category_t* log_handler;

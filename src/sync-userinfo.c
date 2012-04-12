@@ -32,46 +32,66 @@ main(int argc, char *argv[]) {
      * if error return process
      */
     if(logging()) {
-        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "primary process startup -- failed");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "primary process startup -- failed");
         return -1;
     }
-    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "primary process startup -- successful");
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "primary process startup -- successful");
 
     /*
      *Create daemon
      *if error return process
      */
     if(xdaemon()) {
-        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "process into daemon state -- failed");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "process into daemon state -- failed");
         return -2;
     }
-    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "process into daemon state -- successful");
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "process into daemon state -- successful");
 
     /*
      *Load configure files
      *initate server
      */
     if(initServerConfig()) {
-        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "initiate server configure -- failed");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "initiate server configure -- failed");
         return -3;
     }
-    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "initiate server configure -- successful");
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "initiate server configure -- successful");
 
     /*
      *Create queue
      *store receiver item
      */
     if(create_queue()) {
-        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "create queue -- failed");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "create queue -- failed");
         return -4;
     }
-    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "create queue -- successful");
-
-    /*  Create there process: receiver, queue, mysql-connector */
-    createthread();
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "create queue -- successful");
 
     /*
-     * Server fall into Looooop
+     *Create some process include:
+     *one receiver
+     *many mysql-connector 
+     */
+    create_thread();
+
+    /*
+     * Process never run to here
      */
 
     return EXIT_SUCCESS;
@@ -81,12 +101,15 @@ int
 initServerConfig(void) {
     server.receiverIP = "127.0.0.1";
     server.receiverPort = 8080;
+    server.mysql_thread = 10;
 
     return 0;
 }
 
 int
 xdaemon(void) {
+    /*FIXME: debug modue*/
+    /*FIXME: monit process stat*/
     return 0;
     return daemon(0, 0);
 }
@@ -107,25 +130,42 @@ create_queue(void) {
     return 0;
 }
 
-int 
-createthread(void) {
+void
+create_thread(void) {
     int rc;
     pthread_t receiver_tid, request_tid;
 
     rc = pthread_create(&request_tid, NULL, receiver, NULL);
-    assert(0 == rc);
+    if(0 != rc) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "create receiver thread-- failed");
+        exit(-5);
+    }
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "create receiver thread -- successful");
 
-    int mysql_thread_no = 10;
+    /*FIXME:will load configure*/
     int count;
-    for(count = 0; count < mysql_thread_no; count++) {
+    for(count = 0; count < server.mysql_thread; count++) {
         rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
-        assert(0 == rc);
+        if(0 != rc) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_FATAL,
+                    "create mysql_connect thread: %u -- failed", count);
+            exit(-5);
+        }
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_DEBUG,
+                "create mysql_connect thread: %u -- successful", count);
     }
 
     while(1) {
+        /*FIXME:monit thread stat*/
         sleep(5);
     }
 
-    return 0;
+    return ;
 }
 
