@@ -29,6 +29,7 @@
 
 #include "receiver.h"
 #include "mysql_connector.h"
+#include "logging.h"
 
 #define	QUEUE_SIZE 102400 /* Receiver Queue */
 
@@ -37,12 +38,13 @@ struct syncServer {
     int receiverPort;
 };
 
-void initServerConfig(void);
-void xdaemon(void);
-void create_queue(void);
+int initServerConfig(void);
+int xdaemon(void);
+int create_queue(void);
 int createthread();
 
 extern struct syncServer server;
+extern log4c_category_t* log_handler;
 
 #endif
 

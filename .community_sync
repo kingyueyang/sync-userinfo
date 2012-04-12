@@ -15,6 +15,7 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
   inf_education_info.c
   inf_employment_info.c
   inf_header_info.c
+  logging.c
   mysql_connector.c
   receiver.c
   sync-userinfo.c
@@ -23,11 +24,13 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
   inf_education_info.h
   inf_employment_info.h
   inf_header_info.h
+  logging.h
   mysql_connector.h
   receiver.h
   sync-userinfo.h
   utils.h
   Makefile
+  log4crc
   test=test {
    test_user_basic_info.c
    test_user_education_info.c

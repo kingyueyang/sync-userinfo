@@ -26,14 +26,46 @@ apr_queue_t *queue;
 
 int
 main(int argc, char *argv[]) {
-    /* Create one new process by daemon module, if 0 former process return 0 */
-    xdaemon();
+    /*
+     *
+     * Load logging module
+     * if error return process
+     */
+    if(logging()) {
+        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "primary process startup -- failed");
+        return -1;
+    }
+    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "primary process startup -- successful");
 
-    /* Load configure files, initate server */
-    initServerConfig();
+    /*
+     *Create daemon
+     *if error return process
+     */
+    if(xdaemon()) {
+        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "process into daemon state -- failed");
+        return -2;
+    }
+    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "process into daemon state -- successful");
 
-    /* Create global queue */
-    create_queue();
+    /*
+     *Load configure files
+     *initate server
+     */
+    if(initServerConfig()) {
+        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "initiate server configure -- failed");
+        return -3;
+    }
+    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "initiate server configure -- successful");
+
+    /*
+     *Create queue
+     *store receiver item
+     */
+    if(create_queue()) {
+        log4c_category_log(log_handler, LOG4C_PRIORITY_FATAL, "create queue -- failed");
+        return -4;
+    }
+    log4c_category_log(log_handler, LOG4C_PRIORITY_DEBUG, "create queue -- successful");
 
     /*  Create there process: receiver, queue, mysql-connector */
     createthread();
@@ -45,38 +77,38 @@ main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void
+int
 initServerConfig(void) {
     server.receiverIP = "127.0.0.1";
     server.receiverPort = 8080;
 
-    return ;
+    return 0;
 }
 
-void
+int
 xdaemon(void) {
-
-    return ;
+    return 0;
+    return daemon(0, 0);
 }
 
-void
+int
 create_queue(void) {
     apr_status_t rv;
     if(apr_pool_initialize()) {
-        exit(1);
+        return 1;
     }
     if(apr_pool_create(&pool, NULL)) {
-        exit(1);
+        return 2;
     }
     if(apr_queue_create(&queue, QUEUE_SIZE, pool)) {
-        exit(1);
+        return 3;
     }
 
-    return;
+    return 0;
 }
 
 int 
-createthread() {
+createthread(void) {
     int rc;
     pthread_t receiver_tid, request_tid;
 
