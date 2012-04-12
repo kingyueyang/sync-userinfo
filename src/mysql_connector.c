@@ -61,17 +61,17 @@ mysql_connector(void *args) {
     int flag;
 
     MYSQL mysql;
-    /*mysql_init(&mysql);*/
+    mysql_init(&mysql);
 
-    /*[> Connect to mysql server <]*/
-    /*if(!mysql_real_connect(*/
-                /*&mysql, "192.168.142.10", "ci_user",*/
-                /*"y4hrthjUggg", "ci" , 3306, NULL, 0)) {*/
-        /*exit (-1);*/
-    /*}*/
+    /* Connect to mysql server */
+    if(!mysql_real_connect(
+                &mysql, "192.168.142.10", "ci_user",
+                "y4hrthjUggg", "ci" , 3306, NULL, 0)) {
+        exit (-1);
+    }
 
-    /*[> Turn on auto commint <]*/
-    /*mysql_autocommit(&mysql, 1);*/
+    /* Turn on auto commint */
+    mysql_autocommit(&mysql, 1);
 
     void *pop_string = NULL;
     char *raw_string = NULL;
@@ -124,13 +124,13 @@ mysql_connector(void *args) {
                     home_nation, home_pro, home_city,
                     now_nation, now_pro, now_city,
                     uid);
-            /*if(!mysql_ping(&mysql)) {*/
+            if(!mysql_ping(&mysql)) {
                 printf("%s\n", update_proto);
-                /*mysql_query_rc = mysql_query(&mysql, update_proto);*/
-                /*printf ( "mysql_rc:%d\n", mysql_query_rc );*/
-            /*} else {*/
-                /*[> Dump to file <]*/
-            /*}*/
+                mysql_query_rc = mysql_query(&mysql, update_proto);
+                printf ( "mysql_rc:%d\n", mysql_query_rc );
+            } else {
+                /* Dump to file */
+            }
 
             xfree(update_proto);
         }
@@ -143,15 +143,15 @@ mysql_connector(void *args) {
             /* Magic number 66 is SQL proto length */
             update_proto = xmalloc(raw_len + 66);
             snprintf(update_proto, (raw_len + 66), "update base_user_info set header=%s where uid=%s", header, uid);
-            /*if(!mysql_ping(&mysql)) {*/
+            if(!mysql_ping(&mysql)) {
                 printf("%s\n", update_proto);
-                /*mysql_query_rc = mysql_query(&mysql, update_proto);*/
-                /*printf ( "%d\n", mysql_query_rc );*/
-            /*} else {*/
-                /*[> Dump to file <]*/
-                /*[> fprintf(dump_file, "%s\n", update_proto); <]*/
-                /*[> fflush(dump_file); <]*/
-            /*}*/
+                mysql_query_rc = mysql_query(&mysql, update_proto);
+                printf ( "%d\n", mysql_query_rc );
+            } else {
+                /* Dump to file */
+                /* fprintf(dump_file, "%s\n", update_proto); */
+                /* fflush(dump_file); */
+            }
 
             xfree(update_proto);
         }
@@ -165,13 +165,13 @@ mysql_connector(void *args) {
             /* Magic number is SQL proto length plus uid length*/
             insert_proto = xmalloc(raw_len + 150);
             snprintf(delete_proto, (42 + 10), "delete from base_user_education where uid=%s", uid );
-            /*if(!mysql_ping(&mysql)) {*/
+            if(!mysql_ping(&mysql)) {
                 printf("%s\n", delete_proto);
-                /*mysql_query_rc = mysql_query(&mysql, delete_proto);*/
-                /*printf ( "%d\n", mysql_query_rc );*/
-            /*} else {*/
-                /*[> Dump to file <]*/
-            /*}*/
+                mysql_query_rc = mysql_query(&mysql, delete_proto);
+                printf ( "%d\n", mysql_query_rc );
+            } else {
+                /* Dump to file */
+            }
 
             unsigned long long affect;
             if(mysql_field_count(&mysql) == 0) {
@@ -189,13 +189,13 @@ mysql_connector(void *args) {
                         "insert into base_user_education set uid=%s, edu=%s,\
                         school='%s', department='%s', classes=%s, year=%s",
                         uid, edu, school, department, class_, year);
-                /*if(!mysql_ping(&mysql)) {*/
+                if(!mysql_ping(&mysql)) {
                     printf ( "%s\n", insert_proto );
-                    /*mysql_query_rc = mysql_query(&mysql, insert_proto);*/
-                    /*printf ( "%d\n", mysql_query_rc );*/
-                /*} else {*/
-                    /*[> Dump to file <]*/
-                /*}*/
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    printf ( "%d\n", mysql_query_rc );
+                } else {
+                    /* Dump to file */
+                }
             }
 
             if(affect == 0) {
@@ -213,13 +213,13 @@ mysql_connector(void *args) {
             delete_proto = xmalloc(53 + 10);
             insert_proto = xmalloc(raw_len + 202);
             snprintf(delete_proto, (52 + 10), "delete from base_user_employment where uid=%s", uid );
-            /*if(!mysql_ping(&mysql)) {*/
+            if(!mysql_ping(&mysql)) {
                 printf("%s\n", delete_proto);
-                /*mysql_query_rc = mysql_query(&mysql, delete_proto);*/
-                /*printf ( "%d\n", mysql_query_rc );*/
-            /*} else {*/
-                /*[> Dump to file <]*/
-            /*}*/
+                mysql_query_rc = mysql_query(&mysql, delete_proto);
+                printf ( "%d\n", mysql_query_rc );
+            } else {
+                /* Dump to file */
+            }
 
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
                 begin_year = strsep(&neaf, ",");
@@ -235,13 +235,13 @@ mysql_connector(void *args) {
                         end_year=%s, end_month=%s, uid= %s",
                         company, post, begin_year, begin_month,
                         end_year, end_month, uid);
-                /*if(!mysql_ping(&mysql)) {*/
+                if(!mysql_ping(&mysql)) {
                     printf ( "%s\n", insert_proto );
-                    /*mysql_query_rc = mysql_query(&mysql, insert_proto);*/
-                    /*printf ( "%d\n", mysql_query_rc );*/
-                /*} else {*/
-                    /*[> Dump to file <]*/
-                /*}*/
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    printf ( "%d\n", mysql_query_rc );
+                } else {
+                    /* Dump to file */
+                }
             }
             /* If not deltet, notiry real time */
             xfree(delete_proto);
