@@ -21,7 +21,7 @@
 void
 post_SBI_cb(struct evhttp_request *req, void *arg) {
     log4c_category_log(
-            log_handler, LOG4C_PRIORITY_DEBUG,
+            log_handler, LOG4C_PRIORITY_TRACE,
             "SBI: sync_basic_cb active");
     size_t evbuf_length;
     size_t proto_length;
@@ -103,15 +103,21 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->now_city
            );
     log4c_category_log(
-            log_handler, LOG4C_PRIORITY_DEBUG,
-            "SBI: final result %s", text_buf);
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SBI: final result >>>%s<<", text_buf);
 
-    push_rv = apr_queue_trypush(queue, text_buf);
-    if(APR_SUCCESS != push_rv) {
-        /* TODO: Dual error */
-    }
+    push_rv = apr_queue_push(queue, text_buf);
+    /*if(APR_SUCCESS != push_rv) {*/
+        /*log4c_category_log(*/
+                /*log_handler, LOG4C_PRIORITY_WARN,*/
+                /*"push to queue failure");*/
+        /*[> TODO: Dual error <]*/
+    /*}*/
 
     evhttp_send_reply(req, 200, "OK", NULL);
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SBI deal done");
 
 CLEANUP:
     xfree(body_buff);

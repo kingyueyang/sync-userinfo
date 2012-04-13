@@ -94,6 +94,7 @@ mysql_connector(void *args) {
         /* If Basic Info */
         if(1 == flag) {
             /* Split raw string */
+            /*FIXME: will add lock*/
             uid = strsep(&raw_string, ",");
             birth_year = strsep(&raw_string, ",");
             birth_month = strsep(&raw_string, ",");
