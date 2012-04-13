@@ -35,7 +35,7 @@
 
 struct syncServer {
     char *receiverIP;
-    unsigned int receiverPort;
+    unsigned short receiverPort;
     unsigned int mysql_thread;
 };
 

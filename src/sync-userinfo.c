@@ -34,12 +34,12 @@ main(int argc, char *argv[]) {
     if(logging()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "primary process startup -- failed");
+                "sync: primary process startup -- failed");
         return -1;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "primary process startup -- successful");
+            "sync: primary process startup -- successful");
 
     /*
      *Create daemon
@@ -48,12 +48,12 @@ main(int argc, char *argv[]) {
     if(xdaemon()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "process into daemon state -- failed");
+                "sync: process into daemon state -- failed");
         return -2;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "process into daemon state -- successful");
+            "sync: process into daemon state -- successful");
 
     /*
      *Load configure files
@@ -62,12 +62,12 @@ main(int argc, char *argv[]) {
     if(initServerConfig()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "initiate server configure -- failed");
+                "sync: initiate server configure -- failed");
         return -3;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "initiate server configure -- successful");
+            "sync: initiate server configure -- successful");
 
     /*
      *Create queue
@@ -76,12 +76,12 @@ main(int argc, char *argv[]) {
     if(create_queue()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "create queue -- failed");
+                "sync: create queue -- failed");
         return -4;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "create queue -- successful");
+            "sync: create queue -- successful");
 
     /*
      *Create some process include:
@@ -109,7 +109,7 @@ initServerConfig(void) {
 int
 xdaemon(void) {
     /*FIXME: debug modue*/
-    /*FIXME: monit process stat*/
+    /*FIXME: moniter process stat*/
     return 0;
     return daemon(0, 0);
 }
@@ -133,18 +133,19 @@ create_queue(void) {
 void
 create_thread(void) {
     int rc;
+    void *receiver_rc;
     pthread_t receiver_tid, request_tid;
 
-    rc = pthread_create(&request_tid, NULL, receiver, NULL);
+    rc = pthread_create(&receiver_tid, NULL, receiver, NULL);
     if(0 != rc) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "create receiver thread-- failed");
+                "sync: create receiver thread-- failed");
         exit(-5);
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "create receiver thread -- successful");
+            "sync: create receiver thread -- successful");
 
     /*FIXME:will load configure*/
     int count;
@@ -153,17 +154,22 @@ create_thread(void) {
         if(0 != rc) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_FATAL,
-                    "create mysql_connect thread: %u -- failed", count);
+                    "sync: create mysql_connect thread: %u -- failed", count);
             exit(-5);
         }
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_DEBUG,
-                "create mysql_connect thread: %u -- successful", count);
+                "sync: create mysql_connect thread: %u -- successful", count);
     }
 
     while(1) {
-        /*FIXME:monit thread stat*/
-        sleep(5);
+        /*FIXME:moniter thread stat*/
+        /*
+         *moniter of receiver thread
+         */
+        pthread_join(receiver_tid, &receiver_rc);
+        printf ( "%d\n", (int)receiver_rc);
+        sleep(1);
     }
 
     return ;

@@ -53,6 +53,7 @@ void *receiver( void *args);
 static void other_cb( struct evhttp_request *req, void *arg );
 
 extern struct syncServer server;
+extern log4c_category_t* log_handler;
 
 #endif
 
