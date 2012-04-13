@@ -31,7 +31,7 @@
 #include "mysql_connector.h"
 #include "logging.h"
 
-#define	QUEUE_SIZE 102400 /* Receiver Queue */
+#define	QUEUE_SIZE 10240000 /* Receiver Queue */
 
 struct syncServer {
     char *receiverIP;
