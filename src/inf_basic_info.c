@@ -81,7 +81,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "SBI: sync_basic_info: xmalloc memory for test_buf exceptional");
+                "SBI: sync_basic_info: xmalloc memory for text_buf exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
@@ -107,12 +107,12 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             "SBI: final result >>>%s<<", text_buf);
 
     push_rv = apr_queue_push(queue, text_buf);
-    /*if(APR_SUCCESS != push_rv) {*/
-        /*log4c_category_log(*/
-                /*log_handler, LOG4C_PRIORITY_WARN,*/
-                /*"push to queue failure");*/
-        /*[> TODO: Dual error <]*/
-    /*}*/
+    if(APR_SUCCESS != push_rv) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "push to queue failure");
+        /* TODO: Dual error */
+    }
 
     evhttp_send_reply(req, 200, "OK", NULL);
     log4c_category_log(

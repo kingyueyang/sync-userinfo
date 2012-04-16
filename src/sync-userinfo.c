@@ -99,7 +99,7 @@ main(int argc, char *argv[]) {
 
 int
 initServerConfig(void) {
-    server.receiverIP = "127.0.0.1";
+    server.receiverIP = "0.0.0.0";
     server.receiverPort = 8080;
     server.mysql_thread = 10;
 
@@ -133,8 +133,8 @@ create_queue(void) {
 void
 create_thread(void) {
     int rc;
-    void *receiver_rc;
-    pthread_t receiver_tid, request_tid;
+    void *receiver_rc = 0, *request_rc[50] = {0};
+    pthread_t receiver_tid, request_tid[50];
 
     rc = pthread_create(&receiver_tid, NULL, receiver, NULL);
     if(0 != rc) {
@@ -150,7 +150,7 @@ create_thread(void) {
     /*FIXME:will load configure*/
     int count;
     for(count = 0; count < server.mysql_thread; count++) {
-        rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
+        rc = pthread_create(&request_tid[count], NULL, mysql_connector, NULL);
         if(0 != rc) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_FATAL,
@@ -167,9 +167,28 @@ create_thread(void) {
         /*
          *moniter of receiver thread
          */
-        pthread_join(receiver_tid, &receiver_rc);
-        printf ( "%d\n", (int)receiver_rc);
-        sleep(1);
+        /*pthread_join(receiver_tid, &receiver_rc);*/
+        pthread_tryjoin_np(receiver_tid, &receiver_rc);
+        if(receiver_rc != 0) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_ERROR,
+                    "sync: receiver thread abnormal termination, %d", receiver_rc);
+            exit(-1);
+        }
+
+        for(count = 0; count < server.mysql_thread; count++) {
+            /*pthread_join(request_tid[count], &request_rc[50]);*/
+            pthread_tryjoin_np(request_tid[count], &request_rc[count]);
+            if(request_rc[count] != 0) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "sync: mysql connector threads\
+                        abnormal termination, %d:%d", count, receiver_rc);
+                exit(-1);
+            }
+        }
+
+        sleep(5);
     }
 
     return ;

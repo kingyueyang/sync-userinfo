@@ -67,8 +67,14 @@ mysql_connector(void *args) {
     if(!mysql_real_connect(
                 &mysql, "192.168.142.10", "ci_user",
                 "y4hrthjUggg", "ci" , 3306, NULL, 0)) {
-        exit (-1);
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_ERROR,
+                "MySQL_conn: MySQL connecotr error");
+        return ((void *)-1);
     }
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_INFO,
+            "MySQL_conn: MySQL connecotr start up");
 
     /* Turn on auto commint */
     mysql_autocommit(&mysql, 1);
@@ -77,15 +83,23 @@ mysql_connector(void *args) {
     char *raw_string = NULL;
     char *tmp = NULL;
     int raw_len = 1024;
+
     while(1) {
         apr_queue_pop(queue, &pop_string);
+
         raw_string = pop_string;
         raw_len = strlen(raw_string);
 
         if(NULL == raw_string) {
-            printf ( "continue\n" );
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_NOTICE,
+                    "MySQL_conn: POP from queue is NULL");
             continue;
         }
+
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_TRACE,
+                "MySQL_conn: POP from queue: %s", raw_string);
 
         /* Try Pop: Nonblock */
         tmp = strsep(&raw_string, ":");
@@ -114,22 +128,32 @@ mysql_connector(void *args) {
 
             /* Magic number 350 is SQL proto length */
             update_proto = xmalloc(raw_len + 350);
-            snprintf(update_proto, (raw_len + 350), "update base_user_info set \
-                    birth_year=%s, birth_month=%s, birth_day=%s, \
-                    constellation=%s, blood_types=%s, sex=%s, \
-                    home_nation='%s', home_pro='%s', home_city='%s', \
-                    now_nation='%s', now_pro='%s', now_city='%s' \
+            snprintf(update_proto, (raw_len + 350), "update base_user_info set\
+                    birth_year=%s, birth_month=%s, birth_day=%s,\
+                    constellation=%s, blood_types=%s, sex=%s,\
+                    home_nation='%s', home_pro='%s', home_city='%s',\
+                    now_nation='%s', now_pro='%s', now_city='%s'\
                     where uid=%s", 
                     birth_year, birth_month, birth_day,
                     constellation, blood_types, sex,
                     home_nation, home_pro, home_city,
                     now_nation, now_pro, now_city,
                     uid);
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                printf("%s\n", update_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
-                printf ( "mysql_rc:%d\n", mysql_query_rc );
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn: Mysql Server return: %d", mysql_query_rc);
             } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn: lost connect to Mysql Server");
                 /* TODO: Dump to file */
             }
 
@@ -229,8 +253,8 @@ mysql_connector(void *args) {
                 post = strsep(&neaf, ",");
 
                 snprintf(insert_proto, (raw_len + 202),
-                        "insert into base_user_employment set company='%s', \
-                        post='%s', begin_year=%s, begin_month=%s, \
+                        "insert into base_user_employment set company='%s',\
+                        post='%s', begin_year=%s, begin_month=%s,\
                         end_year=%s, end_month=%s, uid= %s",
                         company, post, begin_year, begin_month,
                         end_year, end_month, uid);
