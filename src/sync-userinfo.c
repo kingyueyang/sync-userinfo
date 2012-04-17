@@ -153,7 +153,7 @@ create_dump(void) {
         return 1;
     }
 
-    fprintf(server.dump_file_handler, "test\n");
+    fprintf(server.dump_file_handler, "\n");
     fflush(server.dump_file_handler);
 
     return 0;
