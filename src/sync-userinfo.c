@@ -19,6 +19,8 @@
 #include "sync-userinfo.h"
 #include <arpa/inet.h>
 
+FILE *dump_file_handle = NULL;
+
 struct syncServer server;
 
 apr_pool_t *pool = NULL;
@@ -84,6 +86,19 @@ main(int argc, char *argv[]) {
             "sync: create queue -- successful");
 
     /*
+     *create dump file
+     *when MySQL lost connect
+     */
+    if(create_dump()) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "sync: create dump file -- failed");
+    }
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "sync: create queue -- successful");
+
+    /*
      *Create some process include:
      *one receiver
      *many mysql-connector 
@@ -127,6 +142,19 @@ create_queue(void) {
     if(apr_queue_create(&queue, QUEUE_SIZE, pool)) {
         return 3;
     }
+
+    return 0;
+}
+
+int
+create_dump(void) {
+    server.dump_file_handler= fopen("/tmp/mysql.dump", "a");
+    if(NULL == server.dump_file_handler) {
+        return 1;
+    }
+
+    fprintf(server.dump_file_handler, "test\n");
+    fflush(server.dump_file_handler);
 
     return 0;
 }

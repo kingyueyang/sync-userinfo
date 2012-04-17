@@ -60,8 +60,6 @@ mysql_connector(void *args) {
     int mysql_query_rc;
     int flag;
 
-    FILE *dump_file_handle = NULL;
-
     MYSQL mysql;
     mysql_init(&mysql);
 
@@ -87,19 +85,6 @@ mysql_connector(void *args) {
     int raw_len = 1024;
 
     int malloc_size;
-
-    /*dump_file_handle = fopen(server.dump_file, "a");*/
-    /*if(NULL == dump_file_handle) {*/
-    /*log4c_category_log(*/
-            /*log_handler, LOG4C_PRIORITY_ERROR,*/
-            /*"MySQL_conn: dump file open error");*/
-        /*return ((void *)-2);*/
-    /*}*/
-    /*fprintf( "test\n");*/
-    /*fflush(dump_file_handle);*/
-    /*log4c_category_log(*/
-            /*log_handler, LOG4C_PRIORITY_INFO,*/
-            /*"MySQL_conn: dump file open ok");*/
 
     while(1) {
         apr_queue_pop(queue, &pop_string);
@@ -175,7 +160,8 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_basic: lost connect to Mysql Server");
-                /* TODO: Dump to file */
+                fprintf(server.dump_file_handler, "%s\n", update_proto);
+                fflush(server.dump_file_handler);
             }
 
             xfree(update_proto);
@@ -210,7 +196,8 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_header: lost connect to Mysql Server");
-                /* TODO: Dump to file */
+                fprintf(server.dump_file_handler, "%s\n", update_proto);
+                fflush(server.dump_file_handler);
             }
 
             xfree(update_proto);
@@ -231,7 +218,7 @@ mysql_connector(void *args) {
                     "delete from base_user_education where uid=%s", uid );
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
-                    "MySQL_conn_edu: delete proto: %s", update_proto);
+                    "MySQL_conn_edu: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -244,7 +231,8 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_edu: lost connect to Mysql Server");
-                /* TODO: Dump to file */
+                fprintf(server.dump_file_handler, "%s\n", delete_proto);
+                fflush(server.dump_file_handler);
             }
 
             unsigned long long affect;
@@ -282,7 +270,8 @@ mysql_connector(void *args) {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
                             "MySQL_conn_edu: lost connect to Mysql Server");
-                    /* TODO: Dump to file */
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
                 }
             }
 
@@ -308,7 +297,7 @@ mysql_connector(void *args) {
             snprintf(delete_proto, (malloc_size), "delete from base_user_employment where uid=%s", uid );
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
-                    "MySQL_conn_emp: delete proto: %s", update_proto);
+                    "MySQL_conn_emp: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -321,7 +310,8 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_emp: lost connect to Mysql Server");
-                /* TODO: Dump to file */
+                fprintf(server.dump_file_handler, "%s\n", delete_proto);
+                fflush(server.dump_file_handler);
             }
 
             /* Magic number is SQL proto length plus uid length*/
@@ -357,7 +347,8 @@ mysql_connector(void *args) {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
                             "MySQL_conn_emp: lost connect to Mysql Server");
-                    /* TODO: Dump to file */
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
                 }
             }
             /* If not deltet, notiry real time */

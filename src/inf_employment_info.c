@@ -61,6 +61,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         return ;
     }
     size_t sz = evbuffer_remove(http_buf, body_buff, evbuf_length);
+/*FIXME:remove assert*/
     assert(sz == evbuf_length);
 
     /* Unpack SyncEmploymentInfo package */
