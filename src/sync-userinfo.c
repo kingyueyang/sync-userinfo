@@ -102,6 +102,7 @@ initServerConfig(void) {
     server.receiverIP = "0.0.0.0";
     server.receiverPort = 8080;
     server.mysql_thread = 10;
+    server.dump_file = "/tmp/community_sync.dump";
 
     return 0;
 }

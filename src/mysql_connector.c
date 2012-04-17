@@ -60,6 +60,8 @@ mysql_connector(void *args) {
     int mysql_query_rc;
     int flag;
 
+    FILE *dump_file_handle = NULL;
+
     MYSQL mysql;
     mysql_init(&mysql);
 
@@ -84,6 +86,21 @@ mysql_connector(void *args) {
     char *tmp = NULL;
     int raw_len = 1024;
 
+    int malloc_size;
+
+    /*dump_file_handle = fopen(server.dump_file, "a");*/
+    /*if(NULL == dump_file_handle) {*/
+    /*log4c_category_log(*/
+            /*log_handler, LOG4C_PRIORITY_ERROR,*/
+            /*"MySQL_conn: dump file open error");*/
+        /*return ((void *)-2);*/
+    /*}*/
+    /*fprintf( "test\n");*/
+    /*fflush(dump_file_handle);*/
+    /*log4c_category_log(*/
+            /*log_handler, LOG4C_PRIORITY_INFO,*/
+            /*"MySQL_conn: dump file open ok");*/
+
     while(1) {
         apr_queue_pop(queue, &pop_string);
 
@@ -107,6 +124,9 @@ mysql_connector(void *args) {
 
         /* If Basic Info */
         if(1 == flag) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_basic: post basic");
             /* Split raw string */
             /*FIXME: will add lock*/
             uid = strsep(&raw_string, ",");
@@ -127,8 +147,9 @@ mysql_connector(void *args) {
             now_city = strsep(&raw_string, ",");
 
             /* Magic number 350 is SQL proto length */
-            update_proto = xmalloc(raw_len + 350);
-            snprintf(update_proto, (raw_len + 350), "update base_user_info set\
+            malloc_size = raw_len + 350;
+            update_proto = xmalloc(malloc_size);
+            snprintf(update_proto, (malloc_size), "update base_user_info set\
                     birth_year=%s, birth_month=%s, birth_day=%s,\
                     constellation=%s, blood_types=%s, sex=%s,\
                     home_nation='%s', home_pro='%s', home_city='%s',\
@@ -141,19 +162,19 @@ mysql_connector(void *args) {
                     uid);
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
-                    "MySQL_conn: updata proto: %s", update_proto);
+                    "MySQL_conn_basic: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn: connect Mysql ok");
+                        "MySQL_conn_basic: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_basic: Mysql Server return: %d", mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
-                        "MySQL_conn: lost connect to Mysql Server");
+                        "MySQL_conn_basic: lost connect to Mysql Server");
                 /* TODO: Dump to file */
             }
 
@@ -162,17 +183,33 @@ mysql_connector(void *args) {
 
         /* If Header Info */
         if(2 == flag) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_header: post header");
             uid = strsep(&raw_string, ",");
             header = strsep(&raw_string, ",");
 
             /* Magic number 66 is SQL proto length */
-            update_proto = xmalloc(raw_len + 66);
-            snprintf(update_proto, (raw_len + 66), "update base_user_info set header=%s where uid=%s", header, uid);
+            malloc_size = raw_len + 66;
+            update_proto = xmalloc(malloc_size);
+            snprintf(update_proto, (malloc_size),
+                    "update base_user_info set header=%s where uid=%s",
+                    header, uid);
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_header: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                printf("%s\n", update_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_header: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
-                printf ( "%d\n", mysql_query_rc );
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_header: Mysql Server return: %d", mysql_query_rc);
             } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_header: lost connect to Mysql Server");
                 /* TODO: Dump to file */
             }
 
@@ -181,18 +218,32 @@ mysql_connector(void *args) {
 
         /* If Education Info */
         if(3 == flag) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_edu: post education");
             uid = strsep(&raw_string, ";");
 
             /* Magic number is SQL proto length plus uid length*/
-            delete_proto = xmalloc(42 + 10);
-            /* Magic number is SQL proto length plus uid length*/
-            insert_proto = xmalloc(raw_len + 150);
-            snprintf(delete_proto, (42 + 10), "delete from base_user_education where uid=%s", uid );
+            malloc_size = 52;
+            delete_proto = xmalloc(malloc_size);
+
+            snprintf(delete_proto, (malloc_size),
+                    "delete from base_user_education where uid=%s", uid );
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_edu: delete proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                printf("%s\n", delete_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_edu: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
-                printf ( "%d\n", mysql_query_rc );
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_edu: Mysql Server return: %d", mysql_query_rc);
             } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_edu: lost connect to Mysql Server");
                 /* TODO: Dump to file */
             }
 
@@ -201,6 +252,10 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
             }
 
+            /* Magic number is SQL proto length plus uid length*/
+            malloc_size = raw_len + 150;
+            insert_proto = xmalloc(malloc_size);
+
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
                 edu = strsep(&neaf, ",");
                 school = strsep(&neaf, ",");
@@ -208,15 +263,25 @@ mysql_connector(void *args) {
                 class_ = strsep(&neaf, ",");
                 year = strsep(&neaf, ",");
 
-                snprintf(insert_proto, (raw_len + 150),
+                snprintf(insert_proto, (malloc_size),
                         "insert into base_user_education set uid=%s, edu=%s,\
                         school='%s', department='%s', classes=%s, year=%s",
                         uid, edu, school, department, class_, year);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_edu: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
-                    printf ( "%s\n", insert_proto );
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_edu: connect Mysql ok");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
-                    printf ( "%d\n", mysql_query_rc );
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_edu: Mysql Server return: %d", mysql_query_rc);
                 } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_edu: lost connect to Mysql Server");
                     /* TODO: Dump to file */
                 }
             }
@@ -231,18 +296,37 @@ mysql_connector(void *args) {
 
         /* If employment Info */
         if(4 == flag) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_emp: post employment");
             uid = strsep(&raw_string, ";");
 
-            delete_proto = xmalloc(53 + 10);
-            insert_proto = xmalloc(raw_len + 202);
-            snprintf(delete_proto, (52 + 10), "delete from base_user_employment where uid=%s", uid );
+            malloc_size = 63;
+            /* Magic number is SQL proto length plus uid length*/
+            delete_proto = xmalloc(malloc_size);
+
+            snprintf(delete_proto, (malloc_size), "delete from base_user_employment where uid=%s", uid );
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_emp: delete proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                printf("%s\n", delete_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_emp: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
-                printf ( "%d\n", mysql_query_rc );
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_emp: Mysql Server return: %d", mysql_query_rc);
             } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_emp: lost connect to Mysql Server");
                 /* TODO: Dump to file */
             }
+
+            /* Magic number is SQL proto length plus uid length*/
+            malloc_size = raw_len + 202;
+            insert_proto = xmalloc(malloc_size);
 
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
                 begin_year = strsep(&neaf, ",");
@@ -258,11 +342,21 @@ mysql_connector(void *args) {
                         end_year=%s, end_month=%s, uid= %s",
                         company, post, begin_year, begin_month,
                         end_year, end_month, uid);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_emp: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
-                    printf ( "%s\n", insert_proto );
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_emp: connect Mysql ok");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
-                    printf ( "%d\n", mysql_query_rc );
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_emp: Mysql Server return: %d", mysql_query_rc);
                 } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_emp: lost connect to Mysql Server");
                     /* TODO: Dump to file */
                 }
             }
@@ -272,8 +366,10 @@ mysql_connector(void *args) {
         }
 
         if(flag > 4 || flag < 1) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_NOTICE,
+                    "MySQL_conn_other: flag error");
             xfree(pop_string);
-            printf ( "flag error\n" );
             continue;
         }
 

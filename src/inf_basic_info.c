@@ -63,6 +63,8 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     size_t sz = evbuffer_remove(http_buf, body_buff, evbuf_length);
     assert(sz == evbuf_length);
 
+    write(2, body_buff, evbuf_length);
+
     /* Unpack SyncBasicInfo package */
     _sync_basic_info =
         community__sync_basic_info__unpack(NULL, evbuf_length, body_buff);
