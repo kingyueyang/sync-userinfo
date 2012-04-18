@@ -20,6 +20,9 @@
 
 void
 post_SEI_cb(struct evhttp_request *req, void *arg) {
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SEI: sync_education_cb active");
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -30,6 +33,9 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
 
     /* Only allow POST method */
     if(EVHTTP_REQ_POST != evhttp_request_get_command(req)) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SEI: sync_education_info: not http post package");
         evhttp_send_error(req, HTTP_BADMETHOD, 0);
         return ;
     }
@@ -38,6 +44,9 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     http_buf = evhttp_request_get_input_buffer(req);
     evbuf_length = evbuffer_get_length(http_buf);
     if(evbuf_length <= 0) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SEI: sync_education_info: http package length less than or equal 0");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         return ;
     }
@@ -45,16 +54,23 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     /* Remove to string */
     body_buff = (unsigned char *)xmalloc(evbuf_length + 1);
     if(NULL == body_buff) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SEI: sync_education_info: xmalloc memory for body_buff exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         return ;
     }
     size_t sz = evbuffer_remove(http_buf, body_buff, evbuf_length);
+/*FIXME:remove assert*/
     assert(sz == evbuf_length);
 
     /* Unpack SyncEducationInfo package */
     _sync_education_info =
         community__sync_education_info__unpack(NULL, evbuf_length, body_buff);
     if(NULL == _sync_education_info) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SEI: unpack SyncEducationInfo package exceptional");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
@@ -63,8 +79,18 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         community__sync_education_info__get_packed_size(_sync_education_info);
 
     char *text_buf = xmalloc(proto_length * 2);
+    if(NULL == text_buf) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SEI: sync_education_info: xmalloc memory for text_buf exceptional");
+        evhttp_send_error(req, HTTP_INTERNAL, 0);
+        goto CLEANUP;
+    }
     char *sub_text_buf = xmalloc(proto_length + 1);
-    if(NULL == text_buf || NULL == sub_text_buf) {
+    if(NULL == sub_text_buf) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SEI: sync_education_info: xmalloc memory for sub_text_buf exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
@@ -79,17 +105,25 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
                 _sync_education_info->educations[i]->department,
                 _sync_education_info->educations[i]->class_,
                 _sync_education_info->educations[i]->year
-              );
+                );
         strcat(text_buf, sub_text_buf);
     }
-    printf ("%s\n", text_buf);
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SEI: final result >>>%s<<", text_buf);
 
     push_rv = apr_queue_trypush(queue, text_buf);
     if(APR_SUCCESS != push_rv) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SMI: push to queue failure");
         /* TODO: Dual error */
     }
 
     evhttp_send_reply(req, 200, "OK", NULL);
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SEI deal done");
 
 CLEANUP:
     xfree(body_buff);

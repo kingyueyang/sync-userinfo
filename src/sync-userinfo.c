@@ -19,6 +19,8 @@
 #include "sync-userinfo.h"
 #include <arpa/inet.h>
 
+FILE *dump_file_handle = NULL;
+
 struct syncServer server;
 
 apr_pool_t *pool = NULL;
@@ -34,12 +36,12 @@ main(int argc, char *argv[]) {
     if(logging()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "primary process startup -- failed");
+                "sync: primary process startup -- failed");
         return -1;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "primary process startup -- successful");
+            "sync: primary process startup -- successful");
 
     /*
      *Create daemon
@@ -48,12 +50,12 @@ main(int argc, char *argv[]) {
     if(xdaemon()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "process into daemon state -- failed");
+                "sync: process into daemon state -- failed");
         return -2;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "process into daemon state -- successful");
+            "sync: process into daemon state -- successful");
 
     /*
      *Load configure files
@@ -62,12 +64,12 @@ main(int argc, char *argv[]) {
     if(initServerConfig()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "initiate server configure -- failed");
+                "sync: initiate server configure -- failed");
         return -3;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "initiate server configure -- successful");
+            "sync: initiate server configure -- successful");
 
     /*
      *Create queue
@@ -76,12 +78,25 @@ main(int argc, char *argv[]) {
     if(create_queue()) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "create queue -- failed");
+                "sync: create queue -- failed");
         return -4;
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "create queue -- successful");
+            "sync: create queue -- successful");
+
+    /*
+     *create dump file
+     *when MySQL lost connect
+     */
+    if(create_dump()) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "sync: create dump file -- failed");
+    }
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "sync: create queue -- successful");
 
     /*
      *Create some process include:
@@ -99,9 +114,10 @@ main(int argc, char *argv[]) {
 
 int
 initServerConfig(void) {
-    server.receiverIP = "127.0.0.1";
+    server.receiverIP = "0.0.0.0";
     server.receiverPort = 8080;
-    server.mysql_thread = 10;
+    server.mysql_thread = 1;
+    server.dump_file = "/tmp/community_sync.dump";
 
     return 0;
 }
@@ -109,7 +125,7 @@ initServerConfig(void) {
 int
 xdaemon(void) {
     /*FIXME: debug modue*/
-    /*FIXME: monit process stat*/
+    /*FIXME: moniter process stat*/
     return 0;
     return daemon(0, 0);
 }
@@ -130,39 +146,77 @@ create_queue(void) {
     return 0;
 }
 
+int
+create_dump(void) {
+    server.dump_file_handler= fopen("/tmp/mysql.dump", "a");
+    if(NULL == server.dump_file_handler) {
+        return 1;
+    }
+
+    fprintf(server.dump_file_handler, "\n");
+    fflush(server.dump_file_handler);
+
+    return 0;
+}
+
 void
 create_thread(void) {
     int rc;
-    pthread_t receiver_tid, request_tid;
+    void *receiver_rc = 0, *request_rc[50] = {0};
+    pthread_t receiver_tid, request_tid[50];
 
-    rc = pthread_create(&request_tid, NULL, receiver, NULL);
+    rc = pthread_create(&receiver_tid, NULL, receiver, NULL);
     if(0 != rc) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_FATAL,
-                "create receiver thread-- failed");
+                "sync: create receiver thread-- failed");
         exit(-5);
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
-            "create receiver thread -- successful");
+            "sync: create receiver thread -- successful");
 
     /*FIXME:will load configure*/
     int count;
     for(count = 0; count < server.mysql_thread; count++) {
-        rc = pthread_create(&request_tid, NULL, mysql_connector, NULL);
+        rc = pthread_create(&request_tid[count], NULL, mysql_connector, NULL);
         if(0 != rc) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_FATAL,
-                    "create mysql_connect thread: %u -- failed", count);
+                    "sync: create mysql_connect thread: %u -- failed", count);
             exit(-5);
         }
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_DEBUG,
-                "create mysql_connect thread: %u -- successful", count);
+                "sync: create mysql_connect thread: %u -- successful", count);
     }
 
     while(1) {
-        /*FIXME:monit thread stat*/
+        /*FIXME:moniter thread stat*/
+        /*
+         *moniter of receiver thread
+         */
+        /*pthread_join(receiver_tid, &receiver_rc);*/
+        pthread_tryjoin_np(receiver_tid, &receiver_rc);
+        if(receiver_rc != 0) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_ERROR,
+                    "sync: receiver thread abnormal termination, %d", receiver_rc);
+            exit(-1);
+        }
+
+        for(count = 0; count < server.mysql_thread; count++) {
+            /*pthread_join(request_tid[count], &request_rc[50]);*/
+            pthread_tryjoin_np(request_tid[count], &request_rc[count]);
+            if(request_rc[count] != 0) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "sync: mysql connector threads\
+                        abnormal termination, %d:%d", count, receiver_rc);
+                exit(-1);
+            }
+        }
+
         sleep(5);
     }
 

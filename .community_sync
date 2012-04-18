@@ -11,6 +11,7 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
  proto=proto {
  }
  src=src {
+  log4crc
   inf_basic_info.c
   inf_education_info.c
   inf_employment_info.c
@@ -30,7 +31,6 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
   sync-userinfo.h
   utils.h
   Makefile
-  log4crc
   test=test {
    test_user_basic_info.c
    test_user_education_info.c

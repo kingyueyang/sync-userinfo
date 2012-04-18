@@ -20,6 +20,9 @@
 
 void
 post_SHI_cb(struct evhttp_request *req, void *arg) {
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SHI: sync_header_cb active");
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -30,6 +33,9 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
     /* Only allow POST method */
     if(EVHTTP_REQ_POST != evhttp_request_get_command(req)) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SMI: sync_header_info: not http post package");
         evhttp_send_error(req, HTTP_BADMETHOD, NULL);
         return ;
     }
@@ -38,6 +44,9 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     http_buf = evhttp_request_get_input_buffer(req);
     evbuf_length = evbuffer_get_length(http_buf);
     if(evbuf_length <= 0) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SMI: sync_header_info: http package length less than or equal 0");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         return ;
     }
@@ -45,16 +54,23 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     /* Remove to string */
     body_buff = (unsigned char *)xmalloc(evbuf_length + 1);
     if(NULL == body_buff) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SMI: sync_header_info: xmalloc memory for body_buff exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         return ;
     }
     size_t sz = evbuffer_remove(http_buf, body_buff, evbuf_length);
+/*FIXME:remove assert*/
     assert(sz == evbuf_length);
 
     /* Unpack SyncHeaderInfo package */
     _sync_header_info =
         community__sync_header_info__unpack(NULL, evbuf_length, body_buff);
     if(NULL == _sync_header_info) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SHI: unpack SyncHeaderInfo package exceptional");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
@@ -64,6 +80,9 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
 
     char *text_buf = xmalloc(proto_length + 4);
     if(NULL == text_buf) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SHI: sync_header_info: xmalloc memory for text_buf exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
@@ -73,10 +92,15 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
             _sync_header_info->uid,
             _sync_header_info->header
           );
-    printf ("%s\n", text_buf);
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_TRACE,
+            "SHI: final result >>>%s<<", text_buf);
 
     push_rv = apr_queue_trypush(queue, text_buf);
     if(APR_SUCCESS != push_rv) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_WARN,
+                "SHI: push to queue failure");
         /* TODO: Dual error */
     }
 

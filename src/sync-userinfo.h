@@ -31,11 +31,13 @@
 #include "mysql_connector.h"
 #include "logging.h"
 
-#define	QUEUE_SIZE 102400 /* Receiver Queue */
+#define	QUEUE_SIZE 10240000 /* Receiver Queue */
 
 struct syncServer {
     char *receiverIP;
-    unsigned int receiverPort;
+    char *dump_file;
+    FILE *dump_file_handler;
+    unsigned short receiverPort;
     unsigned int mysql_thread;
 };
 
@@ -46,6 +48,48 @@ void create_thread();
 
 extern struct syncServer server;
 extern log4c_category_t* log_handler;
+
+struct mysql_item {
+    char *neaf;
+
+    char *uid;
+    char *birth_year;
+    char *birth_month;
+    char *birth_day;
+    char *constellation;
+    char *blood_types;
+    char *sex;
+    char *home_nation;
+    char *home_pro;
+    char *home_city;
+    char *now_nation;
+    char *now_pro;
+    char *now_city;
+
+    char *header;
+
+    char *edu;
+    char *school;
+    char *department;
+    char *class_;
+    char *year;
+
+    char *begin_year;
+    char *begin_month;
+    char *end_year;
+    char *end_month;
+    char *company;
+    char *post;
+
+    char *update_proto;
+    char *delete_proto;
+    char *insert_proto;
+
+    int mysql_query_rc;
+    int flag;
+
+    MYSQL mysql;
+} mysql_itmes[50];
 
 #endif
 
