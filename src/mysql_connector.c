@@ -161,7 +161,8 @@ log4c_category_log(
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_basic: Mysql Server return: %d",
+                        mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -175,8 +176,10 @@ log4c_category_log(
             }
             /* new user */
             if(0 == affect) {
-                insert_proto = xmalloc(2048);
-                snprintf(insert_proto, 2048, "insert into base_user_info set\
+                malloc_size = raw_len + 358;
+                insert_proto = xmalloc(malloc_size);
+                snprintf(insert_proto, malloc_size,
+                        "insert into base_user_info set\
                         birth_year=%s, birth_month=%s, birth_day=%s,\
                         constellation=%s, blood_types=%s, sex=%s,\
                         home_nation='%s', home_pro='%s', home_city='%s',\
@@ -191,7 +194,7 @@ log4c_category_log(
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: insert proto: %s", insert_proto);
-
+            printf ( "%s\n", insert_proto );
             if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -199,7 +202,8 @@ log4c_category_log(
                 mysql_query_rc = mysql_query(&mysql, insert_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_basic: Mysql Server return: %d",
+                        mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -208,6 +212,7 @@ log4c_category_log(
                 fflush(server.dump_file_handler);
             }
 
+            xfree(insert_proto);
             xfree(update_proto);
         }
 
@@ -245,6 +250,41 @@ log4c_category_log(
                 fflush(server.dump_file_handler);
             }
 
+            if(mysql_field_count(&mysql) == 0) {
+                affect = (unsigned long long )mysql_affected_rows(&mysql);
+            }
+            /* new user */
+            if(0 == affect) {
+                malloc_size = raw_len + 75;
+                insert_proto = xmalloc(malloc_size);
+                snprintf(insert_proto, malloc_size,
+                        "insert into base_user_info set\
+                        header=%s, uid=%s", 
+                        header, uid);
+            }
+            printf ( "%s\n", insert_proto );
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_basic: insert proto: %s", insert_proto);
+
+            if(!mysql_ping(&mysql)) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: connect Mysql ok");
+                mysql_query_rc = mysql_query(&mysql, insert_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: Mysql Server return: %d",
+                        mysql_query_rc);
+            } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_basic: lost connect to Mysql Server");
+                fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                fflush(server.dump_file_handler);
+            }
+
+            xfree(insert_proto);
             xfree(update_proto);
         }
 
