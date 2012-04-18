@@ -194,7 +194,6 @@ log4c_category_log(
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: insert proto: %s", insert_proto);
-            printf ( "%s\n", insert_proto );
             if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
