@@ -191,7 +191,8 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_header: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_header: Mysql Server return: %d",
+                        mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -226,7 +227,8 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_edu: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_edu: Mysql Server return: %d",
+                        mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -265,7 +267,8 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_edu: Mysql Server return: %d", mysql_query_rc);
+                            "MySQL_conn_edu: Mysql Server return: %d",
+                            mysql_query_rc);
                 } else {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
@@ -294,7 +297,8 @@ mysql_connector(void *args) {
             /* Magic number is SQL proto length plus uid length*/
             delete_proto = xmalloc(malloc_size);
 
-            snprintf(delete_proto, (malloc_size), "delete from base_user_employment where uid=%s", uid );
+            snprintf(delete_proto, (malloc_size),
+                    "delete from base_user_employment where uid=%s", uid );
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_emp: delete proto: %s", delete_proto);
@@ -305,7 +309,8 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_emp: Mysql Server return: %d", mysql_query_rc);
+                        "MySQL_conn_emp: Mysql Server return: %d",
+                        mysql_query_rc);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -342,7 +347,8 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_emp: Mysql Server return: %d", mysql_query_rc);
+                            "MySQL_conn_emp: Mysql Server return: %d",
+                            mysql_query_rc);
                 } else {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
