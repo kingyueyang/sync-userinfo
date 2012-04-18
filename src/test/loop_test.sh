@@ -5,6 +5,9 @@ if [ $# -ne 0 ]; then
   do
     echo "running post $i times"
     ./test_user_basic_info &
+    #./test_user_header_info &
+    #./test_user_education_info &
+    #./test_user_employment_info &
   done
 
 else

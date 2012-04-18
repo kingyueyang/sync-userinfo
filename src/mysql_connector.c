@@ -20,47 +20,54 @@
 
 void *
 mysql_connector(void *args) {
-    char *neaf = NULL;
+    char *neaf;
 
-    char *uid = NULL;
-    char *birth_year = NULL;
-    char *birth_month = NULL;
-    char *birth_day = NULL;
-    char *constellation = NULL;
-    char *blood_types = NULL;
-    char *sex = NULL;
-    char *home_nation = NULL;
-    char *home_pro = NULL;
-    char *home_city = NULL;
-    char *now_nation = NULL;
-    char *now_pro = NULL;
-    char *now_city = NULL;
+    char *uid;
+    char *birth_year;
+    char *birth_month;
+    char *birth_day;
+    char *constellation;
+    char *blood_types;
+    char *sex;
+    char *home_nation;
+    char *home_pro;
+    char *home_city;
+    char *now_nation;
+    char *now_pro;
+    char *now_city;
 
-    char *header = NULL;
+    char *header;
 
-    char *edu = NULL;
-    char *school = NULL;
-    char *department = NULL;
-    char *class_ = NULL;
-    char *year = NULL;
+    char *edu;
+    char *school;
+    char *department;
+    char *class_;
+    char *year;
 
-    char *begin_year = NULL;
-    char *begin_month = NULL;
-    char *end_year = NULL;
-    char *end_month = NULL;
-    char *company = NULL;
-    char *post = NULL;
+    char *begin_year;
+    char *begin_month;
+    char *end_year;
+    char *end_month;
+    char *company;
+    char *post;
 
     /* End char pointer define */
 
-    char *update_proto = NULL;
-    char *delete_proto = NULL;
-    char *insert_proto = NULL;
+    char *update_proto;
+    char *delete_proto;
+    char *insert_proto;
 
     int mysql_query_rc;
     int flag;
 
+    void *pop_string;
+    char *raw_string;
+    char *tmp;
+    unsigned long long affect;
+    int raw_len = 1024;
+
     MYSQL mysql;
+
     mysql_init(&mysql);
 
     /* Connect to mysql server */
@@ -79,15 +86,14 @@ mysql_connector(void *args) {
     /* Turn on auto commint */
     mysql_autocommit(&mysql, 1);
 
-    void *pop_string = NULL;
-    char *raw_string = NULL;
-    char *tmp = NULL;
-    int raw_len = 1024;
-
     int malloc_size;
 
     while(1) {
         apr_queue_pop(queue, &pop_string);
+log4c_category_log(
+        log_handler, LOG4C_PRIORITY_DEBUG,
+        "SQL: %s", pop_string);
+/*continue;*/
 
         raw_string = pop_string;
         raw_len = strlen(raw_string);
@@ -164,6 +170,44 @@ mysql_connector(void *args) {
                 fflush(server.dump_file_handler);
             }
 
+            if(mysql_field_count(&mysql) == 0) {
+                affect = (unsigned long long )mysql_affected_rows(&mysql);
+            }
+            /* new user */
+            if(0 == affect) {
+                insert_proto = xmalloc(2048);
+                snprintf(insert_proto, 2048, "insert into base_user_info set\
+                        birth_year=%s, birth_month=%s, birth_day=%s,\
+                        constellation=%s, blood_types=%s, sex=%s,\
+                        home_nation='%s', home_pro='%s', home_city='%s',\
+                        now_nation='%s', now_pro='%s', now_city='%s',\
+                        uid=%s", 
+                        birth_year, birth_month, birth_day,
+                        constellation, blood_types, sex,
+                        home_nation, home_pro, home_city,
+                        now_nation, now_pro, now_city,
+                        uid);
+            }
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "MySQL_conn_basic: insert proto: %s", insert_proto);
+
+            if(!mysql_ping(&mysql)) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: connect Mysql ok");
+                mysql_query_rc = mysql_query(&mysql, insert_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: Mysql Server return: %d", mysql_query_rc);
+            } else {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_basic: lost connect to Mysql Server");
+                fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                fflush(server.dump_file_handler);
+            }
+
             xfree(update_proto);
         }
 
@@ -237,7 +281,6 @@ mysql_connector(void *args) {
                 fflush(server.dump_file_handler);
             }
 
-            unsigned long long affect;
             if(mysql_field_count(&mysql) == 0) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
             }

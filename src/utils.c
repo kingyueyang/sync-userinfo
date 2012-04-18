@@ -92,6 +92,7 @@ http_post_pb(char *buf, size_t size, char *post_url) {
     }
 
     if(res != 0) {
+        printf("erro no:%d\n", res);
         die("post error!\n");
         return -1;
     }

@@ -12,7 +12,7 @@
 
 
 	<layout name="dated" type="dated"/>
-	<rollingpolicy name="myrollingpolicy" type="sizewin" maxsize="20480" maxnum="5"/>
+	<rollingpolicy name="myrollingpolicy" type="sizewin" maxsize="2048000" maxnum="5"/>
 
   <appender name="project-appender" type="rollingfile" logdir="../log" prefix="yy.log" layout="dated" rollingpolicy="myrollingpolicy" />
   <category name="test-project" priority="trace" appender="project-appender" />
