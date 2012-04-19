@@ -1,8 +1,9 @@
 
-community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync CD=. filter="*.c *.h Makefile" {
+community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync CD=. filter="*.c *.h *.cfg Makefile" {
  bin=bin {
  }
  conf=conf {
+  configure.cfg
  }
  data=data {
  }
@@ -11,7 +12,7 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
  proto=proto {
  }
  src=src {
-  log4crc
+  config.c
   inf_basic_info.c
   inf_education_info.c
   inf_employment_info.c
@@ -21,6 +22,7 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
   receiver.c
   sync-userinfo.c
   utils.c
+  config.h
   inf_basic_info.h
   inf_education_info.h
   inf_employment_info.h

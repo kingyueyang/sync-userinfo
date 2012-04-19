@@ -158,14 +158,14 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_basic: Mysql Server return: %d",
                         mysql_query_rc);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_INFO,
+                        "MySQL_conn_basic: %s", update_proto);
             } else {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
@@ -176,6 +176,9 @@ mysql_connector(void *args) {
 
             if(mysql_field_count(&mysql) == 0) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: is new user");
             }
             /* new user */
             if(0 == affect) {
@@ -193,25 +196,25 @@ mysql_connector(void *args) {
                         home_nation, home_pro, home_city,
                         now_nation, now_pro, now_city,
                         uid);
-            }
-            log4c_category_log(
-                    log_handler, LOG4C_PRIORITY_TRACE,
-                    "MySQL_conn_basic: insert proto: %s", insert_proto);
-            if(!mysql_ping(&mysql)) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: connect Mysql ok");
-                mysql_query_rc = mysql_query(&mysql, insert_proto);
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: Mysql Server return: %d",
-                        mysql_query_rc);
-            } else {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_ERROR,
-                        "MySQL_conn_basic: lost connect to Mysql Server");
-                fprintf(server.dump_file_handler, "%s\n", insert_proto);
-                fflush(server.dump_file_handler);
+                        "MySQL_conn_basic: insert proto: %s", insert_proto);
+                if(!mysql_ping(&mysql)) {
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_basic: Mysql Server return: %d",
+                            mysql_query_rc);
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_INFO,
+                            "MySQL_conn_basic: %s", insert_proto);
+                } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_basic: lost connect to Mysql Server");
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
+                }
             }
 
             xfree(insert_proto);
@@ -236,9 +239,6 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_header: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_header: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -254,6 +254,9 @@ mysql_connector(void *args) {
 
             if(mysql_field_count(&mysql) == 0) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_header: is new user");
             }
             /* new user */
             if(0 == affect) {
@@ -263,26 +266,23 @@ mysql_connector(void *args) {
                         "insert into base_user_info set\
                         header=%s, uid=%s", 
                         header, uid);
-            }
-            log4c_category_log(
-                    log_handler, LOG4C_PRIORITY_TRACE,
-                    "MySQL_conn_basic: insert proto: %s", insert_proto);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: insert proto: %s", insert_proto);
 
-            if(!mysql_ping(&mysql)) {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: connect Mysql ok");
-                mysql_query_rc = mysql_query(&mysql, insert_proto);
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: Mysql Server return: %d",
-                        mysql_query_rc);
-            } else {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_ERROR,
-                        "MySQL_conn_basic: lost connect to Mysql Server");
-                fprintf(server.dump_file_handler, "%s\n", insert_proto);
-                fflush(server.dump_file_handler);
+                if(!mysql_ping(&mysql)) {
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_basic: Mysql Server return: %d",
+                            mysql_query_rc);
+                } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_basic: lost connect to Mysql Server");
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
+                }
             }
 
             xfree(insert_proto);
@@ -306,9 +306,6 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_edu: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_edu: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -324,6 +321,9 @@ mysql_connector(void *args) {
 
             if(mysql_field_count(&mysql) == 0) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_education: is new user");
             }
 
             /* Magic number is SQL proto length plus uid length*/
@@ -345,9 +345,6 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_edu: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
-                    log4c_category_log(
-                            log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_edu: connect Mysql ok");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -376,9 +373,6 @@ mysql_connector(void *args) {
                         "MySQL_conn_basic: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
-                    log4c_category_log(
-                            log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_basic: connect Mysql ok");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -415,9 +409,6 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_emp: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
-                log4c_category_log(
-                        log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_emp: connect Mysql ok");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -453,9 +444,6 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_emp: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
-                    log4c_category_log(
-                            log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_emp: connect Mysql ok");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
