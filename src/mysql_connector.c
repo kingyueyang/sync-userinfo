@@ -89,10 +89,13 @@ mysql_connector(void *args) {
     int malloc_size;
 
     while(1) {
+        update_proto = NULL;
+        delete_proto = NULL;
+        insert_proto = NULL;
         apr_queue_pop(queue, &pop_string);
-log4c_category_log(
-        log_handler, LOG4C_PRIORITY_DEBUG,
-        "SQL: %s", pop_string);
+/*log4c_category_log(*/
+        /*log_handler, LOG4C_PRIORITY_DEBUG,*/
+        /*"SQL: %s", pop_string);*/
 /*continue;*/
 
         raw_string = pop_string;
@@ -261,7 +264,6 @@ log4c_category_log(
                         header=%s, uid=%s", 
                         header, uid);
             }
-            printf ( "%s\n", insert_proto );
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: insert proto: %s", insert_proto);
@@ -361,6 +363,34 @@ log4c_category_log(
             }
 
             if(affect == 0) {
+                if(0 == affect) {
+                    malloc_size = raw_len + 75;
+                    insert_proto = xmalloc(malloc_size);
+                    snprintf(insert_proto, malloc_size,
+                            "insert into base_user_info set\
+                            header=%s, uid=%s", 
+                            header, uid);
+                }
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: insert proto: %s", insert_proto);
+
+                if(!mysql_ping(&mysql)) {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_basic: connect Mysql ok");
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_basic: Mysql Server return: %d",
+                            mysql_query_rc);
+                } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_basic: lost connect to Mysql Server");
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
+                }
                 /*TODO: send notify*/
             }
 
