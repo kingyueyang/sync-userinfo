@@ -22,11 +22,19 @@
 
 /* receiver configure */
 typedef struct {
+    const char *receiver_ip;
+    unsigned int receiver_port;
 } receiver_cfg;
 
 /* mysql configure */
 typedef struct {
+    const char *mysql_ip;
+    const char *mysql_user;
+    const char *mysql_pwd;
+    const char *mysql_db;
+    unsigned int mysql_port;
+    unsigned int mysql_thread_count;
 } mysql_cfg;
 
-conf get_conf(const char *conf_file);
+int get_conf(const char *conf_file);
 

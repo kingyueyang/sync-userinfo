@@ -4,5 +4,6 @@
 4.protobuf-c-0.15
 5.libmysqlclient 5.5.22-1
 6.log4c-1.2.1
+7.libconfig-1.4.8
 
-7.libdaemon-0.14
+8.libdaemon-0.14
