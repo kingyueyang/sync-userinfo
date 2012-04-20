@@ -23,11 +23,7 @@ int
 get_conf(const char *conf_file) {
     const char *module_name;
     config_t cfg;
-    config_setting_t *receiver, *mysql_server;
-
-    /* Init server inf struct */
-    receiver_cfg receiver_conf;
-    mysql_cfg mysql_conf;
+    config_setting_t *receiver_server, *mysql_server;
 
     config_init(&cfg);
 
@@ -41,46 +37,57 @@ get_conf(const char *conf_file) {
 
     /* Get configure mdul name */
     if (config_lookup_string(&cfg, "module_name", &module_name)) {
-        printf("%s\n", module_name);
+        ;
     } else {
         fprintf(stderr, "No name int configure file.\n");
     }
 
-    /* Get server base information */
-    receiver = config_lookup(&cfg, "receiver");
-    if(receiver != NULL) {
-        int count = config_setting_length(receiver);
-
-        /* Load receiver configure */
-        if(!(config_setting_lookup_string(receiver,
-                        "server_ip", &receiver_conf.receiver_ip))) {
-            printf("%s\n", receiver_conf.receiver_ip);
-        } else {
-            printf ( "no ip\n" );
+    /* Get receiver information */
+    receiver_server = config_lookup(&cfg, "config.receiver");
+    if(receiver_server != NULL) {
+        int count = config_setting_length(receiver_server);
+        if(count != 1) {
+            return -1;
         }
 
+        /* Load receiver_server configure */
+        config_setting_t *receiver = config_setting_get_elem(receiver_server, 0);
+        if(!(config_setting_lookup_string(receiver, "server_ip", &server.receiverIP)
+                    && config_setting_lookup_int(receiver, "server_port", &server.receiverPort))) {
+            return -2;
+        }
+        printf ( "%s\n", server.receiverIP );
+        printf ( "%d\n",  server.receiverPort );
+
+    } else {
+        fprintf(stderr, "no item reveiver_server.\n");
     }
+
+    /* Get mysql information */
+    mysql_server = config_lookup(&cfg, "config.mysql");
+    if(mysql_server != NULL) {
+        int count = config_setting_length(mysql_server);
+        if(count != 1) {
+            return -1;
+        }
+
+        /* Load mysql_server configure */
+        config_setting_t *conn_mysql = config_setting_get_elem(mysql_server, 0);
+        if(!(config_setting_lookup_string(conn_mysql, "ip", &server.mysqlIP)
+                    && config_setting_lookup_string(conn_mysql, "user", &server.mysqlUser)
+                    && config_setting_lookup_string(conn_mysql, "passwd", &server.mysqlPasswd)
+                    && config_setting_lookup_string(conn_mysql, "db", &server.db)
+                    && config_setting_lookup_int(conn_mysql, "port", &server.mysqlPort)
+                    && config_setting_lookup_int(conn_mysql, "thread_count", &server.mysqlThread)
+                    )) {
+            return -3;
+        }
+
+    } else {
+        fprintf(stderr, "no item mysql_server.\n");
+    }
+
     config_destroy(&cfg);
     return 0;
 }
-
-int
-main( int argc, char *argv[]) {
-    get_conf("../conf/configure.cfg");
-
-    /* test code */
-    /*printf("%s\n", feiliao_conf.sub_srv.get_url);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.get_userpwd);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.get_path);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.local_cached_path);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.put_url);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.put_userpwd);*/
-    /*printf("%d\n", feiliao_conf.sub_srv.retry);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.set_day);*/
-    /*printf("%s\n", feiliao_conf.sub_srv.phone_no);*/
-    /*printf("\n");*/
-
-    return EXIT_SUCCESS;
-}				/* ----------  end of function main  ---------- */
-
 

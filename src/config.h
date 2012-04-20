@@ -16,25 +16,17 @@
  * =====================================================================================
  */
 
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<libconfig.h>
 
-/* receiver configure */
-typedef struct {
-    const char *receiver_ip;
-    unsigned int receiver_port;
-} receiver_cfg;
-
-/* mysql configure */
-typedef struct {
-    const char *mysql_ip;
-    const char *mysql_user;
-    const char *mysql_pwd;
-    const char *mysql_db;
-    unsigned int mysql_port;
-    unsigned int mysql_thread_count;
-} mysql_cfg;
+#include "sync-userinfo.h"
 
 int get_conf(const char *conf_file);
 
+extern struct syncServer server;
+
+#endif

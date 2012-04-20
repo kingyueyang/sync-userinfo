@@ -112,7 +112,7 @@ mysql_connector(void *args) {
                 log_handler, LOG4C_PRIORITY_TRACE,
                 "MySQL_conn: POP from queue: %s", raw_string);
 
-        /* Try Pop: Nonblock */
+        /* Get flag */
         tmp = strsep(&raw_string, ":");
         flag= atoi(tmp);
 
@@ -122,7 +122,6 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: post basic");
             /* Split raw string */
-            /*FIXME: will add lock*/
             uid = strsep(&raw_string, ",");
             birth_year = strsep(&raw_string, ",");
             birth_month = strsep(&raw_string, ",");
@@ -157,6 +156,7 @@ mysql_connector(void *args) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_basic: updata proto: %s", update_proto);
+            /* query mysql */
             if(!mysql_ping(&mysql)) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
@@ -167,6 +167,7 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_INFO,
                         "MySQL_conn_basic: %s", update_proto);
             } else {
+                /* Dump to file */
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_basic: lost connect to Mysql Server");
@@ -212,6 +213,7 @@ mysql_connector(void *args) {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
                             "MySQL_conn_basic: lost connect to Mysql Server");
+                    /* Dump to file */
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
@@ -323,7 +325,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_education: is new user");
+                        "MySQL_conn_edu: is new user");
             }
 
             /* Magic number is SQL proto length plus uid length*/
@@ -360,28 +362,28 @@ mysql_connector(void *args) {
             }
 
             if(affect == 0) {
-                if(0 == affect) {
-                    malloc_size = raw_len + 75;
-                    insert_proto = xmalloc(malloc_size);
-                    snprintf(insert_proto, malloc_size,
-                            "insert into base_user_info set\
-                            header=%s, uid=%s", 
-                            header, uid);
-                }
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_edu: AFFECT:%d", affect);
+                malloc_size = raw_len + 75;
+                insert_proto = xmalloc(malloc_size);
+                snprintf(insert_proto, malloc_size,
+                        "insert into base_user_info set\
+                        uid=%s", uid);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: insert proto: %s", insert_proto);
+                        "MySQL_conn_edu: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_basic: Mysql Server return: %d",
+                            "MySQL_conn_edu: Mysql Server return: %d",
                             mysql_query_rc);
                 } else {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
-                            "MySQL_conn_basic: lost connect to Mysql Server");
+                            "MySQL_conn_edu: lost connect to Mysql Server");
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }

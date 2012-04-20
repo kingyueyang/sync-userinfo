@@ -111,7 +111,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
             log_handler, LOG4C_PRIORITY_TRACE,
             "SMI: final result >>>%s<<", text_buf);
 
-    push_rv = apr_queue_trypush(queue, text_buf);
+    push_rv = apr_queue_push(queue, text_buf);
     if(APR_SUCCESS != push_rv) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,

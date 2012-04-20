@@ -19,8 +19,6 @@
 #include "sync-userinfo.h"
 #include <arpa/inet.h>
 
-FILE *dump_file_handle = NULL;
-
 struct syncServer server;
 
 apr_pool_t *pool = NULL;
@@ -44,20 +42,6 @@ main(int argc, char *argv[]) {
             "sync: primary process startup -- successful");
 
     /*
-     *Create daemon
-     *if error return process
-     */
-    if(xdaemon()) {
-        log4c_category_log(
-                log_handler, LOG4C_PRIORITY_FATAL,
-                "sync: process into daemon state -- failed");
-        return -2;
-    }
-    log4c_category_log(
-            log_handler, LOG4C_PRIORITY_DEBUG,
-            "sync: process into daemon state -- successful");
-
-    /*
      *Load configure files
      *initate server
      */
@@ -70,6 +54,20 @@ main(int argc, char *argv[]) {
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
             "sync: initiate server configure -- successful");
+
+    /*
+     *Create daemon
+     *if error return process
+     */
+    if(xdaemon()) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "sync: process into daemon state -- failed");
+        return -2;
+    }
+    log4c_category_log(
+            log_handler, LOG4C_PRIORITY_DEBUG,
+            "sync: process into daemon state -- successful");
 
     /*
      *Create queue
@@ -116,8 +114,29 @@ int
 initServerConfig(void) {
     server.receiverIP = "0.0.0.0";
     server.receiverPort = 8080;
-    server.mysql_thread = 1;
     server.dump_file = "/tmp/community_sync.dump";
+
+    server.mysqlIP = "192.168.142.10";
+    server.mysqlUser = "ci_user";
+    server.mysqlPasswd = "y4hrthjUggg";
+    server.db = "ci";
+    server.mysqlPort = 3306;
+    server.mysqlThread = 1;
+
+    /*get_conf("../conf/configure.cfg");*/
+
+    printf ( "%s\n", server.receiverIP );
+    /*printf ( "%d\n", server.receiverPort );*/
+    /*printf("%%s\t", server.receiverIP);*/
+    /*printf("%s\t", server.receiverPort);*/
+    /*printf("%s\n", server.dump_file);*/
+
+    /*printf("%s\t", server.mysqlIP);*/
+    /*printf("%s\t", server.mysqlUser);*/
+    /*printf("%s\t", server.mysqlPasswd);*/
+    /*printf("%s\t", server.db);*/
+    /*printf("%d\t", server.mysqlPort);*/
+    /*printf("%d\n", server.mysqlThread);*/
 
     return 0;
 }
@@ -178,7 +197,7 @@ create_thread(void) {
 
     /*FIXME:will load configure*/
     int count;
-    for(count = 0; count < server.mysql_thread; count++) {
+    for(count = 0; count < server.mysqlThread; count++) {
         rc = pthread_create(&request_tid[count], NULL, mysql_connector, NULL);
         if(0 != rc) {
             log4c_category_log(
@@ -205,8 +224,7 @@ create_thread(void) {
             exit(-1);
         }
 
-        for(count = 0; count < server.mysql_thread; count++) {
-            /*pthread_join(request_tid[count], &request_rc[50]);*/
+        for(count = 0; count < server.mysqlThread; count++) {
             pthread_tryjoin_np(request_tid[count], &request_rc[count]);
             if(request_rc[count] != 0) {
                 log4c_category_log(

@@ -30,15 +30,23 @@
 #include "receiver.h"
 #include "mysql_connector.h"
 #include "logging.h"
+#include "config.h"
 
 #define	QUEUE_SIZE 80960000 /* Receiver Queue */
 
 struct syncServer {
-    char *receiverIP;
-    char *dump_file;
+    const char *receiverIP;
+    int receiverPort;
+    const char *dump_file;
+
+    const char *mysqlIP;
+    const char *mysqlUser;
+    const char *mysqlPasswd;
+    const char *db;
+    int mysqlPort;
+    int mysqlThread;
+
     FILE *dump_file_handler;
-    unsigned short receiverPort;
-    unsigned int mysql_thread;
 };
 
 int initServerConfig(void);
