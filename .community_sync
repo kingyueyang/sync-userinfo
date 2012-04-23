@@ -19,6 +19,7 @@ community_sync=/home/yueyang/Workspace/CI/04_源码/01_接口/src/community_sync
   inf_header_info.c
   logging.c
   mysql_connector.c
+  notify.c
   receiver.c
   sync-userinfo.c
   utils.c

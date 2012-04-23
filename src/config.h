@@ -28,5 +28,6 @@
 int get_conf(const char *conf_file);
 
 extern struct syncServer server;
+struct syncServer server_;
 
 #endif

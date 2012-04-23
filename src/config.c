@@ -53,11 +53,13 @@ get_conf(const char *conf_file) {
         /* Load receiver_server configure */
         config_setting_t *receiver = config_setting_get_elem(receiver_server, 0);
         if(!(config_setting_lookup_string(receiver, "server_ip", &server.receiverIP)
-                    && config_setting_lookup_int(receiver, "server_port", &server.receiverPort))) {
+                    && config_setting_lookup_int(receiver, "server_port", &server.receiverPort)
+                    && config_setting_lookup_string(receiver, "dump_file", &server.dump_file) )) {
             return -2;
         }
         printf ( "%s\n", server.receiverIP );
         printf ( "%d\n",  server.receiverPort );
+        printf ( "%s\n", server.dump_file );
 
     } else {
         fprintf(stderr, "no item reveiver_server.\n");
@@ -82,6 +84,13 @@ get_conf(const char *conf_file) {
                     )) {
             return -3;
         }
+        printf ( "\n" );
+        printf ( "%s\n", server.mysqlIP);
+        printf ( "%s\n", server.mysqlUser);
+        printf ( "%s\n", server.mysqlPasswd);
+        printf ( "%s\n", server.db);
+        printf ( "%d\n", server.mysqlPort);
+        printf ( "%d\n", server.mysqlThread);
 
     } else {
         fprintf(stderr, "no item mysql_server.\n");

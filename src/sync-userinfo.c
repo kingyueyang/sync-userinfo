@@ -112,23 +112,21 @@ main(int argc, char *argv[]) {
 
 int
 initServerConfig(void) {
-    server.receiverIP = "0.0.0.0";
-    server.receiverPort = 8080;
-    server.dump_file = "/tmp/community_sync.dump";
+    /*server.receiverIP = "0.0.0.0";*/
+    /*server.receiverPort = 8080;*/
+    /*server.dump_file = "/tmp/community_sync.dump";*/
 
-    server.mysqlIP = "192.168.142.10";
-    server.mysqlUser = "ci_user";
-    server.mysqlPasswd = "y4hrthjUggg";
-    server.db = "ci";
-    server.mysqlPort = 3306;
-    server.mysqlThread = 1;
+    /*server.mysqlIP = "192.168.142.10";*/
+    /*server.mysqlUser = "ci_user";*/
+    /*server.mysqlPasswd = "y4hrthjUggg";*/
+    /*server.db = "ci";*/
+    /*server.mysqlPort = 3306;*/
+    /*server.mysqlThread = 1;*/
 
-    /*get_conf("../conf/configure.cfg");*/
+    get_conf("../conf/configure.cfg");
 
-    printf ( "%s\n", server.receiverIP );
+    /*printf ( "%s\n", server.receiverIP );*/
     /*printf ( "%d\n", server.receiverPort );*/
-    /*printf("%%s\t", server.receiverIP);*/
-    /*printf("%s\t", server.receiverPort);*/
     /*printf("%s\n", server.dump_file);*/
 
     /*printf("%s\t", server.mysqlIP);*/
