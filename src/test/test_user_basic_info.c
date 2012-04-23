@@ -32,7 +32,7 @@ main( int argc, char *argv[] ) {
 
     char home_nation[] = "China";
     char home_pro[] = "ShanDong";
-    char home_city[] = "WeiHai";
+    char home_city[] = "YanTai";
 
     char now_nation[] = "China";
     char now_pro[] = "BeiJing";

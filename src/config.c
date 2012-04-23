@@ -57,9 +57,10 @@ get_conf(const char *conf_file) {
                     && config_setting_lookup_string(receiver, "dump_file", &server.dump_file) )) {
             return -2;
         }
-        printf ( "%s\n", server.receiverIP );
-        printf ( "%d\n",  server.receiverPort );
-        printf ( "%s\n", server.dump_file );
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_INFO,
+                "config: receiverIP:%s, receiverPort:%d, dump_file:%s",
+                server.receiverIP, server.receiverPort, server.dump_file);
 
     } else {
         fprintf(stderr, "no item reveiver_server.\n");
@@ -76,21 +77,25 @@ get_conf(const char *conf_file) {
         /* Load mysql_server configure */
         config_setting_t *conn_mysql = config_setting_get_elem(mysql_server, 0);
         if(!(config_setting_lookup_string(conn_mysql, "ip", &server.mysqlIP)
-                    && config_setting_lookup_string(conn_mysql, "user", &server.mysqlUser)
-                    && config_setting_lookup_string(conn_mysql, "passwd", &server.mysqlPasswd)
-                    && config_setting_lookup_string(conn_mysql, "db", &server.db)
-                    && config_setting_lookup_int(conn_mysql, "port", &server.mysqlPort)
-                    && config_setting_lookup_int(conn_mysql, "thread_count", &server.mysqlThread)
-                    )) {
+                    && config_setting_lookup_string(conn_mysql,
+                        "user", &server.mysqlUser)
+                    && config_setting_lookup_string(conn_mysql,
+                        "passwd", &server.mysqlPasswd)
+                    && config_setting_lookup_string(conn_mysql,
+                        "db", &server.db)
+                    && config_setting_lookup_int(conn_mysql,
+                        "port", &server.mysqlPort)
+                    && config_setting_lookup_int(conn_mysql,
+                        "thread_count", &server.mysqlThread)
+            )) {
             return -3;
         }
-        printf ( "\n" );
-        printf ( "%s\n", server.mysqlIP);
-        printf ( "%s\n", server.mysqlUser);
-        printf ( "%s\n", server.mysqlPasswd);
-        printf ( "%s\n", server.db);
-        printf ( "%d\n", server.mysqlPort);
-        printf ( "%d\n", server.mysqlThread);
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_INFO,
+                "config: mysqlIP:%s, mysqlUser:%s, mysqlPasswd:%s,\
+                db:%s, mysqlPort:%d, mysqlThread:%d",
+                server.mysqlIP, server.mysqlUser, server.mysqlPasswd,
+                server.db, server.mysqlPort, server.mysqlThread);
 
     } else {
         fprintf(stderr, "no item mysql_server.\n");

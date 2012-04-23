@@ -28,5 +28,7 @@
 
 int logging(void);
 
+extern log4c_category_t* log_handler;
+
 #endif
 

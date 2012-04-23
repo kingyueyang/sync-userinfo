@@ -73,8 +73,8 @@ mysql_connector(void *args) {
 
     /* Connect to mysql server */
     if(!mysql_real_connect(
-                &mysql, "192.168.142.10", "ci_user",
-                "y4hrthjUggg", "ci" , 3306, NULL, 0)) {
+                &mysql, server.mysqlIP, server.mysqlUser,
+                server.mysqlPasswd, server.db, MYSQL_PORT, NULL, 0)) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_ERROR,
                 "MySQL_conn: MySQL connecotr error");
