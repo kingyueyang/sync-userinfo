@@ -162,7 +162,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: Mysql Server return: %d",
+                        "MySQL_conn_basic: Mysql Server update return: %d",
                         mysql_query_rc);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_INFO,
@@ -180,7 +180,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: is new user");
+                        "MySQL_conn_basic: is new user, affect:%d", affect);
             }
             /* new user */
             if(0 == affect) {
@@ -205,7 +205,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_basic: Mysql Server return: %d",
+                            "MySQL_conn_basic: Mysql Server insert return: %d",
                             mysql_query_rc);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_INFO,
@@ -245,7 +245,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_header: Mysql Server return: %d",
+                        "MySQL_conn_header: Mysql Server update return: %d",
                         mysql_query_rc);
             } else {
                 log4c_category_log(
@@ -259,7 +259,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_header: is new user");
+                        "MySQL_conn_header: is new user, affect:%d", affect);
             }
             /* new user */
             if(0 == affect) {
@@ -271,18 +271,18 @@ mysql_connector(void *args) {
                         header, uid);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: insert proto: %s", insert_proto);
+                        "MySQL_conn_header: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_basic: Mysql Server return: %d",
+                            "MySQL_conn_header: Mysql Server insert return: %d",
                             mysql_query_rc);
                 } else {
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_ERROR,
-                            "MySQL_conn_basic: lost connect to Mysql Server");
+                            "MySQL_conn_header: lost connect to Mysql Server");
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
@@ -312,7 +312,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_edu: Mysql Server return: %d",
+                        "MySQL_conn_edu: Mysql Server delete return: %d",
                         mysql_query_rc);
             } else {
                 log4c_category_log(
@@ -326,7 +326,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_edu: is new user");
+                        "MySQL_conn_edu: is new user, affect:%d", affect);
             }
 
             /* Magic number is SQL proto length plus uid length*/
@@ -351,7 +351,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_edu: Mysql Server return: %d",
+                            "MySQL_conn_edu: Mysql Server insert return: %d",
                             mysql_query_rc);
                 } else {
                     log4c_category_log(
@@ -379,7 +379,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_edu: Mysql Server return: %d",
+                            "MySQL_conn_edu: Mysql Server insert return: %d",
                             mysql_query_rc);
                 } else {
                     log4c_category_log(
@@ -415,7 +415,7 @@ mysql_connector(void *args) {
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_emp: Mysql Server return: %d",
+                        "MySQL_conn_emp: Mysql Server delete return: %d",
                         mysql_query_rc);
             } else {
                 log4c_category_log(
@@ -450,7 +450,7 @@ mysql_connector(void *args) {
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
-                            "MySQL_conn_emp: Mysql Server return: %d",
+                            "MySQL_conn_emp: Mysql Server insert return: %d",
                             mysql_query_rc);
                 } else {
                     log4c_category_log(
