@@ -96,7 +96,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     }
 
     /* Type flag 3 */
-    sprintf(text_buf, "3:%d",_sync_education_info->uid);
+    sprintf(text_buf, "3:%ld",_sync_education_info->uid);
     int i;
     for(i = 0; i < _sync_education_info->n_educations; i++) {
         sprintf (sub_text_buf, ";%d,%s,%s,%d,%d",

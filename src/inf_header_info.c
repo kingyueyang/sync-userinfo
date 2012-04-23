@@ -88,7 +88,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     }
 
     /* Type flag 2 */
-    sprintf(text_buf, "2:%d,%d",
+    sprintf(text_buf, "2:%ld,%d",
             _sync_header_info->uid,
             _sync_header_info->header
           );
