@@ -180,7 +180,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_basic: is new user, affect:%d", affect);
+                        "MySQL_conn_basic: update affect:%d", affect);
             }
             /* new user */
             if(0 == affect) {
@@ -218,6 +218,10 @@ mysql_connector(void *args) {
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
+                affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_basic: insert affect:%d", affect);
             }
 
             xfree(insert_proto);
@@ -259,7 +263,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_header: is new user, affect:%d", affect);
+                        "MySQL_conn_header: update affect:%d", affect);
             }
             /* new user */
             if(0 == affect) {
@@ -286,6 +290,10 @@ mysql_connector(void *args) {
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
+                affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_header: insert affect:%d", affect);
             }
 
             xfree(insert_proto);
@@ -326,7 +334,7 @@ mysql_connector(void *args) {
                 affect = (unsigned long long )mysql_affected_rows(&mysql);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
-                        "MySQL_conn_edu: is new user, affect:%d", affect);
+                        "MySQL_conn_edu: delete affect:%d", affect);
             }
 
             /* Magic number is SQL proto length plus uid length*/
