@@ -68,7 +68,10 @@ mysql_connector(void *args) {
 
     MYSQL mysql;
 
+    my_bool reconnect = 1;
+
     mysql_init(&mysql);
+    /*mysql_options(&mysql, MYSQL_OPT_RECONNECT, &reconnect);*/
 
     /* Connect to mysql server */
     if(!mysql_real_connect(
