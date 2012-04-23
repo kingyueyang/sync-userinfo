@@ -96,8 +96,14 @@ struct mysql_item {
     int mysql_query_rc;
     int flag;
 
+    void *pop_string;
+    char *raw_string;
+    char *tmp;
+    unsigned long long affect;
+    int raw_len;
+
     MYSQL mysql;
-} mysql_itmes[50];
+} mysql_itmes[20];
 
 #endif
 

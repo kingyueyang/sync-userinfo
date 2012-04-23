@@ -123,7 +123,7 @@ initServerConfig(void) {
     server.mysqlPort = 3306;
     server.mysqlThread = 2;
 
-    /*get_conf("../conf/configure.cfg");*/
+    get_conf("../conf/configure.cfg");
 
     /*printf ( "%s\n", server.receiverIP );*/
     /*printf ( "%d\n", server.receiverPort );*/

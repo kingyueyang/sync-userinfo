@@ -51,8 +51,6 @@ mysql_connector(void *args) {
     char *company;
     char *post;
 
-    /* End char pointer define */
-
     char *update_proto;
     char *delete_proto;
     char *insert_proto;
@@ -64,7 +62,7 @@ mysql_connector(void *args) {
     char *raw_string;
     char *tmp;
     unsigned long long affect;
-    int raw_len = 1024;
+    int raw_len;
 
     MYSQL mysql;
 

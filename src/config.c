@@ -96,7 +96,7 @@ get_conf(const char *conf_file) {
         fprintf(stderr, "no item mysql_server.\n");
     }
 
-    config_destroy(&cfg);
+    /*config_destroy(&cfg);*/
     return 0;
 }
 
