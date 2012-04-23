@@ -112,16 +112,16 @@ main(int argc, char *argv[]) {
 
 int
 initServerConfig(void) {
-    /*server.receiverIP = "0.0.0.0";*/
-    /*server.receiverPort = 8080;*/
-    /*server.dump_file = "/tmp/community_sync.dump";*/
+    server.receiverIP = "0.0.0.0";
+    server.receiverPort = 8080;
+    server.dump_file = "/tmp/community_sync.dump";
 
-    /*server.mysqlIP = "192.168.142.10";*/
-    /*server.mysqlUser = "ci_user";*/
-    /*server.mysqlPasswd = "y4hrthjUggg";*/
-    /*server.db = "ci";*/
-    /*server.mysqlPort = 3306;*/
-    /*server.mysqlThread = 1;*/
+    server.mysqlIP = "192.168.142.10";
+    server.mysqlUser = "ci_user";
+    server.mysqlPasswd = "y4hrthjUggg";
+    server.db = "ci";
+    server.mysqlPort = 3306;
+    server.mysqlThread = 2;
 
     get_conf("../conf/configure.cfg");
 
