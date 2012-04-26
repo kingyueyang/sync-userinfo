@@ -394,6 +394,8 @@ mysql_connector(void *args) {
                     fflush(server.dump_file_handler);
                 }
                 notify_rt("S001", uid);
+                notify_rt("S002", uid);
+                notify_rt("S003", uid);
             }
 
             xfree(delete_proto);

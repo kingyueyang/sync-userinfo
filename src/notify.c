@@ -51,11 +51,11 @@ notify_rt(char *type, char *uid) {
         if(res) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_ERROR,
-                    "notify: notify to real time error");
+                    "notify: notify to real time error: %s", type);
         } else {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
-                    "notify: notify to real time");
+                    "notify: notify to real time: %s", type);
         }
 
         xfree(content);
