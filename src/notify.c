@@ -20,6 +20,7 @@
 #include <curl/curl.h>
 
 #include "utils.h"
+#include "receiver.h"
 
 /* int64_t(20) + type(6) */
 #define	CONTENT_LEN 26			/*  */
@@ -47,6 +48,15 @@ notify_rt(char *type, char *uid) {
 
         /* Perform the request, res will get the return code */
         res = curl_easy_perform(curl);
+        if(res) {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_ERROR,
+                    "notify: notify to real time error");
+        } else {
+            log4c_category_log(
+                    log_handler, LOG4C_PRIORITY_TRACE,
+                    "notify: notify to real time");
+        }
 
         xfree(content);
         curl_slist_free_all (headerlist);

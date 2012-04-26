@@ -113,6 +113,7 @@ mysql_connector(void *args) {
         tmp = strsep(&raw_string, ":");
         flag= atoi(tmp);
 
+        /* Keep elegant */
         /* If Basic Info */
         if(1 == flag) {
             log4c_category_log(
