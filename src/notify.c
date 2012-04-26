@@ -35,7 +35,7 @@ notify_rt(char *type, char *uid) {
 
     curl = curl_easy_init();
     if(curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1:8888");
+        curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1:8080");
         /*curl_easy_setopt(curl, CURLOPT_URL, "http://10.10.140.94:8080/realtime/jservice/recommondation");*/
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
 

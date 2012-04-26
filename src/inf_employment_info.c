@@ -60,8 +60,13 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         return ;
     }
     size_t sz = evbuffer_remove(http_buf, body_buff, evbuf_length);
-/*FIXME:remove assert*/
-    assert(sz == evbuf_length);
+
+    if(sz != evbuf_length) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "sync_employment_info: http buffer length not match");
+        goto CLEANUP;
+    }
 
     /* Unpack SyncEmploymentInfo package */
     _sync_employment_info =
