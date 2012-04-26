@@ -435,6 +435,13 @@ mysql_connector(void *args) {
                 fflush(server.dump_file_handler);
             }
 
+            if(mysql_field_count(&mysql) == 0) {
+                affect = (unsigned long long )mysql_affected_rows(&mysql);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_emp: delete affect:%d", affect);
+            }
+
             /* Magic number is SQL proto length plus uid length*/
             malloc_size = raw_len + 202;
             insert_proto = xmalloc(malloc_size);
@@ -470,6 +477,35 @@ mysql_connector(void *args) {
                     fflush(server.dump_file_handler);
                 }
             }
+
+            if(affect == 0) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_ERROR,
+                        "MySQL_conn_emp: AFFECT:%d", affect);
+                malloc_size = raw_len + 75;
+                insert_proto = xmalloc(malloc_size);
+                snprintf(insert_proto, malloc_size,
+                        "insert into base_user_info set\
+                        uid=%s", uid);
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_TRACE,
+                        "MySQL_conn_emp: insert proto: %s", insert_proto);
+
+                if(!mysql_ping(&mysql)) {
+                    mysql_query_rc = mysql_query(&mysql, insert_proto);
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_TRACE,
+                            "MySQL_conn_emp: Mysql Server insert return: %d",
+                            mysql_query_rc);
+                } else {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_ERROR,
+                            "MySQL_conn_emp: lost connect to Mysql Server");
+                    fprintf(server.dump_file_handler, "%s\n", insert_proto);
+                    fflush(server.dump_file_handler);
+                }
+            }
+
             /* If not deltet, notiry real time */
             xfree(delete_proto);
             xfree(insert_proto);
