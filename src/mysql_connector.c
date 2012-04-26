@@ -94,12 +94,6 @@ mysql_connector(void *args) {
         delete_proto = NULL;
         insert_proto = NULL;
         apr_queue_pop(queue, &pop_string);
-/*FIXME:will remove*/
-/*continue;*/
-/*log4c_category_log(*/
-        /*log_handler, LOG4C_PRIORITY_DEBUG,*/
-        /*"SQL: %s", pop_string);*/
-/*continue;*/
 
         raw_string = pop_string;
         raw_len = strlen(raw_string);
