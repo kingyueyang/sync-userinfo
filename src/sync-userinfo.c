@@ -142,7 +142,6 @@ initServerConfig(void) {
 int
 xdaemon(void) {
     /*FIXME: debug modue*/
-    /*FIXME: moniter process stat*/
     return 0;
     return daemon(0, 0);
 }
@@ -193,7 +192,6 @@ create_thread(void) {
             log_handler, LOG4C_PRIORITY_DEBUG,
             "sync: create receiver thread -- successful");
 
-    /*FIXME:will load configure*/
     int count;
     for(count = 0; count < server.mysqlThread; count++) {
         rc = pthread_create(&request_tid[count], NULL, mysql_connector, NULL);
@@ -209,11 +207,15 @@ create_thread(void) {
     }
 
     while(1) {
-        /*FIXME:moniter thread stat*/
+        /*FIXME:moniter thread restat*/
         /*
          *moniter of receiver thread
          */
         /*pthread_join(receiver_tid, &receiver_rc);*/
+        /*log4c_category_log(*/
+                /*log_handler, LOG4C_PRIORITY_ERROR,*/
+                /*"sync: will check thread");*/
+
         pthread_tryjoin_np(receiver_tid, &receiver_rc);
         if(receiver_rc != 0) {
             log4c_category_log(
@@ -232,8 +234,11 @@ create_thread(void) {
                 exit(-1);
             }
         }
+        /*log4c_category_log(*/
+                /*log_handler, LOG4C_PRIORITY_ERROR,*/
+                /*"sync: checked thread done");*/
 
-        sleep(5);
+        sleep(1);
     }
 
     return ;

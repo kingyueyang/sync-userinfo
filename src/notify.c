@@ -19,8 +19,13 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
+#include "utils.h"
+
+/* int64_t(20) + type(6) */
+#define	CONTENT_LEN 26			/*  */
+
 int 
-notifu_rt(char *type, long uid) {
+notify_rt(char *type, char *uid) {
     CURL *curl;
     CURLcode res;
     struct curl_slist *headerlist = NULL;
@@ -32,15 +37,21 @@ notifu_rt(char *type, long uid) {
         curl_easy_setopt(curl, CURLOPT_URL, "127.0.0.1:8888");
         /*curl_easy_setopt(curl, CURLOPT_URL, "http://10.10.140.94:8080/realtime/jservice/recommondation");*/
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "S001,407902377");
+
+        /*curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "S001,407902377");*/
+
         /*同校S001 同班S002 同乡S003*/
+        char *content = xmalloc(CONTENT_LEN);
+        sprintf(content, "%s,%s", type, uid);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content);
 
         /* Perform the request, res will get the return code */
         res = curl_easy_perform(curl);
 
+        xfree(content);
         curl_slist_free_all (headerlist);
         curl_easy_cleanup(curl);
     }
-    return 0;
+    return (int)res;
 }
 

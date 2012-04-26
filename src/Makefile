@@ -8,7 +8,7 @@ OBJ=sync-userinfo.o receiver.o \
     inf_basic_info.o inf_header_info.o \
     inf_education_info.o inf_employment_info.o \
     mysql_connector.o utils.o \
-    logging.o config.o\
+    logging.o config.o notify.o \
     ../proto/community.pb-c.c
 
 ${EXEC}:${OBJ}
@@ -42,6 +42,9 @@ logging.o:logging.c
 	${CC} -c -o $@ $<
 
 config.o:config.c
+	${CC} -c -o $@ $<
+
+notify.o:notify.c
 	${CC} -c -o $@ $<
 
 .PYHON:

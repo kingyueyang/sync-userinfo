@@ -20,7 +20,6 @@
 
 void *
 receiver(void *args) {
-    /*FIXME:micrsecond*/
     sleep(1);
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,

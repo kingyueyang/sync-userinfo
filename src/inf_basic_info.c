@@ -30,7 +30,6 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     struct evbuffer *http_buf;
     Community__SyncBasicInfo *_sync_basic_info;
 
-
     /* Only allow POST method */
     if(EVHTTP_REQ_POST != evhttp_request_get_command(req)) {
         log4c_category_log(

@@ -32,7 +32,8 @@
 #include "logging.h"
 #include "config.h"
 
-#define	QUEUE_SIZE 80960000 /* Receiver Queue */
+//#define	QUEUE_SIZE 80960000 [> Receiver Queue <]
+#define	QUEUE_SIZE 102400 /* Receiver Queue */
 
 struct syncServer {
     const char *receiverIP;

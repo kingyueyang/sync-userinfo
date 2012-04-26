@@ -94,6 +94,8 @@ mysql_connector(void *args) {
         delete_proto = NULL;
         insert_proto = NULL;
         apr_queue_pop(queue, &pop_string);
+/*FIXME:will remove*/
+/*continue;*/
 /*log4c_category_log(*/
         /*log_handler, LOG4C_PRIORITY_DEBUG,*/
         /*"SQL: %s", pop_string);*/
@@ -396,7 +398,7 @@ mysql_connector(void *args) {
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
-                /*TODO: send notify*/
+                notify_rt("S001", uid);
             }
 
             xfree(delete_proto);
