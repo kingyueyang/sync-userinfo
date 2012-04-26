@@ -5,5 +5,7 @@
 5.libmysqlclient 5.5.22-1
 6.log4c-1.2.1
 7.libconfig-1.4.8
+8.apr-1.4.6
+9.apr-util-1.4.1
 
-8.libdaemon-0.14
+10.libdaemon-0.14
