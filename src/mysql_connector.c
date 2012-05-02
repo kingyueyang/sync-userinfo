@@ -87,6 +87,21 @@ mysql_connector(void *args) {
     /* Turn on auto commint */
     mysql_autocommit(&mysql, 1);
 
+    if(!mysql_ping(&mysql)) {
+        mysql_query(&mysql, "SET NAMES UTF8");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_TRACE,
+                "MySQL_conn: Mysql Server set utf-8");
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_INFO,
+                "MySQL_conn: %s", "SET NAMES UTF8");
+    } else {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_FATAL,
+                "MySQL_conn: lost connect to Mysql Server");
+        return ((void *)0);
+    }
+
     int malloc_size;
 
     while(1) {
@@ -156,6 +171,7 @@ mysql_connector(void *args) {
                     "MySQL_conn_basic: updata proto: %s", update_proto);
             /* query mysql */
             if(!mysql_ping(&mysql)) {
+                mysql_query(&mysql, "SET NAMES UTF8");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -199,6 +215,7 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_basic: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -243,6 +260,7 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_header: updata proto: %s", update_proto);
             if(!mysql_ping(&mysql)) {
+                mysql_query(&mysql, "SET NAMES UTF8");
                 mysql_query_rc = mysql_query(&mysql, update_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -275,6 +293,7 @@ mysql_connector(void *args) {
                         "MySQL_conn_header: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -314,6 +333,7 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_edu: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
+                mysql_query(&mysql, "SET NAMES UTF8");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -353,6 +373,7 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_edu: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -381,6 +402,7 @@ mysql_connector(void *args) {
                         "MySQL_conn_edu: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -419,6 +441,7 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_emp: delete proto: %s", delete_proto);
             if(!mysql_ping(&mysql)) {
+                mysql_query(&mysql, "SET NAMES UTF8");
                 mysql_query_rc = mysql_query(&mysql, delete_proto);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
@@ -461,6 +484,7 @@ mysql_connector(void *args) {
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_emp: insert proto: %s", insert_proto);
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
@@ -489,6 +513,7 @@ mysql_connector(void *args) {
                         "MySQL_conn_emp: insert proto: %s", insert_proto);
 
                 if(!mysql_ping(&mysql)) {
+                    mysql_query(&mysql, "SET NAMES UTF8");
                     mysql_query_rc = mysql_query(&mysql, insert_proto);
                     log4c_category_log(
                             log_handler, LOG4C_PRIORITY_TRACE,
