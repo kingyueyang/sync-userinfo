@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  mysql_connector.h
+ *       Filename:  notify.h
  *
- *    Description:  connect to mysql and execute query
+ *    Description:  
  *
  *        Version:  1.0
- *        Created:  04/11/2012 10:56:59 AM
+ *        Created:  05/04/2012 03:30:39 PM
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,21 +16,15 @@
  * =====================================================================================
  */
 
-#ifndef _MYSQL_CONNECTOR_H_
-#define _MYSQL_CONNECTOR_H_
+#ifndef _NOTIFY_H_
+#define _NOTIFY_H_
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <mysql/mysql.h>
+#include <curl/curl.h>
 
-#include "receiver.h"
 #include "utils.h"
-#include "notify.h"
+#include "receiver.h"
 
-void *mysql_connector(void *args);
-
-extern apr_pool_t *pool;
-extern apr_queue_t *queue;
+int notify_rt(char *type, char *uid);
 
 #endif

@@ -2,7 +2,7 @@ all:sync-userinfo
 
 LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -lmysqlclient -llog4c -lconfig
 #CC=gcc -std=c99 -g
-CC=gcc -g
+CC=gcc -g -Wall
 EXEC=sync-userinfo
 OBJ=sync-userinfo.o receiver.o \
     inf_basic_info.o inf_header_info.o \

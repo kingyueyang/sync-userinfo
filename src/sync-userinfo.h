@@ -106,5 +106,7 @@ struct mysql_item {
     MYSQL mysql;
 } mysql_itmes[20];
 
+int create_dump(void);
+
 #endif
 

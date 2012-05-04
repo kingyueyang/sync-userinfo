@@ -148,7 +148,7 @@ xdaemon(void) {
 
 int
 create_queue(void) {
-    apr_status_t rv;
+    /*apr_status_t rv;*/
     if(apr_pool_initialize()) {
         return 1;
     }

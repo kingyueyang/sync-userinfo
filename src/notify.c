@@ -16,11 +16,7 @@
  * =====================================================================================
  */
 
-#include <stdio.h>
-#include <curl/curl.h>
-
-#include "utils.h"
-#include "receiver.h"
+#include "notify.h"
 
 /* int64_t(20) + type(6) */
 #define	CONTENT_LEN 26			/*  */
