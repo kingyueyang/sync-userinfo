@@ -20,7 +20,7 @@
 
 void *
 receiver(void *args) {
-    sleep(1);
+    /*sleep(1);*/
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_DEBUG,
             "receiver: receiver module starting with IP:%s, Posr:%d",
