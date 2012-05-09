@@ -29,10 +29,12 @@ get_conf(const char *conf_file) {
 
     /* Read configure file, and handle error */
     if (! config_read_file(&cfg, conf_file)) {
-        fprintf(stderr, "open configure file(%s) error - %s .\n",
-                config_error_file(&cfg), config_error_text(&cfg));
-        config_destroy(&cfg);
-        exit (EXIT_FAILURE);
+        if (! config_read_file(&cfg, "/etc/configure.cfg")) {
+            fprintf(stderr, "open configure file(%s) error - %s .\n",
+                    config_error_file(&cfg), config_error_text(&cfg));
+            config_destroy(&cfg);
+            exit (EXIT_FAILURE);
+        }
     }
 
     /* Get configure mdul name */
