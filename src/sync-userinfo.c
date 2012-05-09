@@ -125,17 +125,6 @@ initServerConfig(void) {
 
     get_conf("../conf/configure.cfg");
 
-    /*printf ( "%s\n", server.receiverIP );*/
-    /*printf ( "%d\n", server.receiverPort );*/
-    /*printf("%s\n", server.dump_file);*/
-
-    /*printf("%s\t", server.mysqlIP);*/
-    /*printf("%s\t", server.mysqlUser);*/
-    /*printf("%s\t", server.mysqlPasswd);*/
-    /*printf("%s\t", server.db);*/
-    /*printf("%d\t", server.mysqlPort);*/
-    /*printf("%d\n", server.mysqlThread);*/
-
     return 0;
 }
 
@@ -169,7 +158,7 @@ create_dump(void) {
         return 1;
     }
 
-    fprintf(server.dump_file_handler, "\n");
+    /*fprintf(server.dump_file_handler, "\n");*/
     fflush(server.dump_file_handler);
 
     return 0;
