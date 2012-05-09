@@ -11,4 +11,14 @@ do
     `dirname $0`/../src/sync-userinfo
     echo sync-userinfo restart ok !
   fi 
+
+  SEC=`date +%S`
+  echo $SEC
+  MOD=`expr $SEC % 3`
+  if [ $MOD == 0 ]
+  then
+      echo "ok"
+      sleep 1
+  fi
+
 done
