@@ -2,7 +2,7 @@
 
 while true ;
 do
-  ps aux |grep -v "grep" | grep -v "vim" | grep -v "\.c" |grep "sync-userinfo" > /dev/null
+  ps aux |grep -v "grep" | grep -v "vi" | grep -v "\.c" |grep "sync-userinfo" > /dev/null
 
   if [ $? -eq 0 ]
   then
