@@ -1,9 +1,11 @@
 all:sync-userinfo
 
-LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -lmysqlclient -llog4c -lconfig
+INC=`/usr/bin/apr-1-config --includes` -I./ `mysql_config --include`
+LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -llog4c -lconfig `/usr/bin/apr-1-config --link-ld` `/usr/bin/apu-1-config --link-ld` `mysql_config --libs`
 #CC=gcc -std=c99 -g
 CC=gcc -g -Wall
 EXEC=sync-userinfo
+
 OBJ=sync-userinfo.o receiver.o \
     inf_basic_info.o inf_header_info.o \
     inf_education_info.o inf_employment_info.o \
@@ -15,37 +17,37 @@ ${EXEC}:${OBJ}
 	${CC} -o $@ $^ ${LIB}
   
 sync-userinfo.o:sync-userinfo.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 receiver.o:receiver.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 inf_basic_info.o:inf_basic_info.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 inf_header_info.o:inf_header_info.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 inf_education_info.o:inf_education_info.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 inf_employment_info.o:inf_employment_info.c
-	${CC} -c $<
+	${CC} -c $< ${INC}
 
 utils.o:utils.c
 	${CC} -c -o $@ $<
 
 mysql_connector.o:mysql_connector.c
-	${CC} -c -o $@ $<
+	${CC} -c -o $@ $< ${INC}
 
 logging.o:logging.c
 	${CC} -c -o $@ $<
 
 config.o:config.c
-	${CC} -c -o $@ $<
+	${CC} -c -o $@ $< ${INC}
 
 notify.o:notify.c
-	${CC} -c -o $@ $<
+	${CC} -c -o $@ $< ${INC}
 
 .PYHON:
 clean:

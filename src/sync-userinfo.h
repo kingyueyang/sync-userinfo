@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/types.h>
-#include <apr-1/apr_queue.h>
+#include <apr_queue.h>
 
 #include "receiver.h"
 #include "mysql_connector.h"

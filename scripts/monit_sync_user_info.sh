@@ -6,18 +6,20 @@ do
 
   if [ $? -eq 0 ]
   then
-    echo sync-userinfo is running!
+    :
+    #echo sync-userinfo is running!
   else
-    `dirname $0`/../src/sync-userinfo
-    echo sync-userinfo restart ok !
+    cd `dirname $0`/../src
+    ./sync-userinfo
+    #echo sync-userinfo restart ok !
   fi 
 
   SEC=`date +%S`
-  echo $SEC
+  #echo $SEC
   MOD=`expr $SEC % 3`
   if [ $MOD == 0 ]
   then
-      echo "ok"
+      #echo "ok"
       sleep 1
   fi
 
