@@ -1,7 +1,7 @@
 all:sync-userinfo
 
-INC=`/usr/bin/apr-1-config --includes` -I./ `mysql_config --include`
-LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -llog4c -lconfig `/usr/bin/apr-1-config --link-ld` `/usr/bin/apu-1-config --link-ld` `mysql_config --libs`
+INC=`/usr/local/apr/bin/apr-1-config --includes` -I./ `mysql_config --include`
+LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -llog4c -lconfig `/usr/local/apr/bin/apr-1-config --link-ld` `/usr/local/apr/bin/apu-1-config --link-ld` `mysql_config --libs`
 #CC=gcc -std=c99 -g
 CC=gcc -g -Wall
 EXEC=sync-userinfo

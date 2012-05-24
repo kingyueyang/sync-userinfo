@@ -13,14 +13,13 @@ do
     ./sync-userinfo
     #echo sync-userinfo restart ok !
   fi 
+  sleep 1
 
-  SEC=`date +%S`
-  #echo $SEC
-  MOD=`expr $SEC % 3`
-  if [ $MOD == 0 ]
-  then
-      #echo "ok"
-      sleep 1
-  fi
+#SEC=`date +%S`
+#MOD=`expr $SEC % 2`
+#if [ $MOD == 0 ]
+#then
+#sleep 1
+#fi
 
 done
