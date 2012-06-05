@@ -99,6 +99,13 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
+    if(0 == _sync_employment_info->uid) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SMI: uid eq zero");
+        evhttp_send_error(req, HTTP_BADREQUEST, 0);
+        goto CLEANUP;
+    }
     /* Type flag 4 */
     sprintf(text_buf, "4:%ld",_sync_employment_info->uid);
     int i;
@@ -108,8 +115,10 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
                 _sync_employment_info->employments[i]->begin_month,
                 _sync_employment_info->employments[i]->end_year,
                 _sync_employment_info->employments[i]->end_month,
-                _sync_employment_info->employments[i]->company,
-                _sync_employment_info->employments[i]->post
+                _sync_employment_info->employments[i]->company ==
+		NULL ? "" : _sync_employment_info->employments[i]->company,
+                _sync_employment_info->employments[i]->post ==
+		NULL ? "" : _sync_employment_info->employments[i]->post
                 );
         strncat(text_buf, sub_text_buf, proto_length+20*1024);
     }

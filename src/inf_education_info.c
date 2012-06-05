@@ -101,7 +101,6 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
-    /* Type flag 3 */
     if(0 == _sync_education_info->uid) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
@@ -109,6 +108,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
+    /* Type flag 3 */
     sprintf(text_buf, "3:%ld",_sync_education_info->uid);
     int i;
     for(i = 0; i < _sync_education_info->n_educations; i++) {
