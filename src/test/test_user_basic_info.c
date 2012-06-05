@@ -72,7 +72,7 @@ main( int argc, char *argv[] ) {
     printf ( "%d\n", test->birth_year);
 #endif
 
-    char *server_url = "http://127.0.0.1:8080/syncbasicinfo";
+    char *server_url = "http://172.21.73.130:9001/syncbasicinfo";
     http_post_pb(sync_basic_info_buff, rc_size, server_url);
 
     return EXIT_SUCCESS;

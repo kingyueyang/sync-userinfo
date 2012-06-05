@@ -131,7 +131,7 @@ initServerConfig(void) {
 int
 xdaemon(void) {
     /*FIXME: debug modue*/
-    /*return 0;*/
+    //return 0;
     return daemon(0, 0);
 }
 

@@ -23,6 +23,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SBI: sync_basic_cb active");
+    char *text_buf = NULL;
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -82,7 +83,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_basic_info__get_packed_size(_sync_basic_info);
 
-    char *text_buf = xmalloc(proto_length + 15);
+    text_buf = xmalloc(proto_length + 1500);
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
@@ -92,7 +93,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     }
 
     /* Type flag 1 */
-    sprintf( text_buf, "1:%ld,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
+    snprintf( text_buf, proto_length+1500, "1:%ld,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
@@ -116,6 +117,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
                 "push to queue failure");
+	xfree(text_buf);
         /* TODO: Dual error */
     }
 

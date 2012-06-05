@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/types.h>
-#include <apr-1/apr_queue.h>
+#include <apr_queue.h>
 
 #include "receiver.h"
 #include "mysql_connector.h"
@@ -33,7 +33,7 @@
 #include "config.h"
 
 //#define	QUEUE_SIZE 80960000 [> Receiver Queue <]
-#define	QUEUE_SIZE 102400 /* Receiver Queue */
+#define	QUEUE_SIZE 40960000 /* Receiver Queue */
 
 struct syncServer {
     const char *receiverIP;

@@ -5,16 +5,16 @@
 
 	<config>
 		<bufsize>0</bufsize>
-		<debug level="0"/>
+		<NOTICE level="0"/>
 		<nocleanup>0</nocleanup>
 		<reread>1</reread>
 	</config>
 
 
 	<layout name="dated" type="dated"/>
-	<rollingpolicy name="myrollingpolicy" type="sizewin" maxsize="2048000" maxnum="5"/>
+	<rollingpolicy name="myrollingpolicy" type="sizewin" maxsize="204800000" maxnum="10"/>
 
-  <appender name="project-appender" type="rollingfile" logdir="../log" prefix="yy.log" layout="dated" rollingpolicy="myrollingpolicy" />
+  <appender name="project-appender" type="rollingfile" logdir="../log" prefix="community_sync.log" layout="dated" rollingpolicy="myrollingpolicy" />
   <category name="test-project" priority="trace" appender="project-appender" />
 
 </log4c>
