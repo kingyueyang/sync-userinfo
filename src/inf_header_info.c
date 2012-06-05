@@ -20,6 +20,7 @@
 
 void
 post_SHI_cb(struct evhttp_request *req, void *arg) {
+    char *text_buf = NULL;
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SHI: sync_header_cb active");
@@ -82,7 +83,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_header_info__get_packed_size(_sync_header_info);
 
-    char *text_buf = xmalloc(proto_length + 4);
+    text_buf = xmalloc(proto_length + 1024);
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,

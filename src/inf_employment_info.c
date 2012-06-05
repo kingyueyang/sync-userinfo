@@ -23,6 +23,8 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SMI: sync_education_cb active");
+    char *text_buf = NULL;
+    char *sub_text_buf = NULL;
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -74,7 +76,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(NULL == _sync_employment_info) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
-                "SEI: unpack SyncEducationInfo package exceptional");
+                "SMI: unpack SyncEducationInfo package exceptional");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
@@ -82,13 +84,13 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_employment_info__get_packed_size(_sync_employment_info);
 
-    char *text_buf = xmalloc(proto_length * 2);
+    text_buf = xmalloc(proto_length + 20*1024);
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
                 "SMI: sync_education_info: xmalloc memory for text_buf exceptional");
     }
-    char *sub_text_buf = xmalloc(proto_length + 1);
+    sub_text_buf = xmalloc(proto_length + 1500);
     if(NULL == text_buf || NULL == sub_text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
@@ -101,7 +103,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     sprintf(text_buf, "4:%ld",_sync_employment_info->uid);
     int i;
     for(i = 0; i < _sync_employment_info->n_employments; i++) {
-        sprintf (sub_text_buf, ";%d,%d,%d,%d,%s,%s",
+        snprintf (sub_text_buf, proto_length+1500, ";%d,%d,%d,%d,%s,%s",
                 _sync_employment_info->employments[i]->begin_year,
                 _sync_employment_info->employments[i]->begin_month,
                 _sync_employment_info->employments[i]->end_year,
@@ -109,7 +111,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
                 _sync_employment_info->employments[i]->company,
                 _sync_employment_info->employments[i]->post
                 );
-        strcat(text_buf, sub_text_buf);
+        strncat(text_buf, sub_text_buf, proto_length+20*1024);
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,

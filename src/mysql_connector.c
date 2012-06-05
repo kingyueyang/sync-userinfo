@@ -108,11 +108,10 @@ mysql_connector(void *args) {
         update_proto = NULL;
         delete_proto = NULL;
         insert_proto = NULL;
-        apr_queue_pop(queue, &pop_string);
+        if (apr_queue_pop(queue, &pop_string) != APR_SUCCESS)
+            continue;
 
         raw_string = pop_string;
-        raw_len = strlen(raw_string);
-
         if(NULL == raw_string) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_NOTICE,
@@ -120,6 +119,7 @@ mysql_connector(void *args) {
             continue;
         }
 
+        raw_len = strlen(raw_string);
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_TRACE,
                 "MySQL_conn: POP from queue: %s", raw_string);
@@ -145,16 +145,45 @@ mysql_connector(void *args) {
             sex = strsep(&raw_string, ",");
 
             home_nation = strsep(&raw_string, ",");
+            if(strcmp("国家/地区", home_nation) == 0) {
+                home_nation = "";
+            }
+
             home_pro = strsep(&raw_string, ",");
+            if(strcmp("省份", home_pro) == 0){
+                home_pro= "";
+            }
+
             home_city = strsep(&raw_string, ",");
+            if(strcmp("城市", home_city) == 0){
+                home_city= "";
+            }
 
             now_nation = strsep(&raw_string, ",");
+            if(strcmp("国家/地区", now_nation) == 0){
+                now_nation = "";
+            }
+
             now_pro = strsep(&raw_string, ",");
+            if(strcmp("省份", now_pro) == 0){
+                now_pro= "";
+            }
+
             now_city = strsep(&raw_string, ",");
+            if(strcmp("城市", now_city) == 0){
+                now_city= "";
+            }
 
             /* Magic number 350 is SQL proto length */
-            malloc_size = raw_len + 350;
+            malloc_size = raw_len + 512;
             update_proto = xmalloc(malloc_size);
+            if(NULL == update_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_basic: update alloc memory error");
+                xfree(update_proto);
+                continue;
+            }
             snprintf(update_proto, (malloc_size), "update base_user_info set\
                     birth_year=%s, birth_month=%s, birth_day=%s,\
                     constellation=%s, blood_types=%s, sex=%s,\
@@ -197,8 +226,16 @@ mysql_connector(void *args) {
             }
             /* new user */
             if(0 == affect) {
-                malloc_size = raw_len + 358;
+                malloc_size = raw_len + 512;
                 insert_proto = xmalloc(malloc_size);
+                if(NULL == insert_proto) {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_WARN,
+                            "MySQL_conn_basic: insert alloc memory error");
+                    xfree(insert_proto);
+                    xfree(update_proto);
+                    continue;
+                }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
                         birth_year=%s, birth_month=%s, birth_day=%s,\
@@ -251,8 +288,15 @@ mysql_connector(void *args) {
             header = strsep(&raw_string, ",");
 
             /* Magic number 66 is SQL proto length */
-            malloc_size = raw_len + 66;
+            malloc_size = raw_len + 128;
             update_proto = xmalloc(malloc_size);
+            if(NULL == update_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_header: update alloc memory error");
+                xfree(update_proto);
+                continue;
+            }
             snprintf(update_proto, (malloc_size),
                     "update base_user_info set header=%s where uid=%s",
                     header, uid);
@@ -282,8 +326,16 @@ mysql_connector(void *args) {
             }
             /* new user */
             if(0 == affect) {
-                malloc_size = raw_len + 75;
+                malloc_size = raw_len + 128;
                 insert_proto = xmalloc(malloc_size);
+                if(NULL == insert_proto) {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_WARN,
+                            "MySQL_conn_header: insert alloc memory error");
+                    xfree(insert_proto);
+                    xfree(update_proto);
+                    continue;
+                }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
                         header=%s, uid=%s", 
@@ -324,8 +376,15 @@ mysql_connector(void *args) {
             uid = strsep(&raw_string, ";");
 
             /* Magic number is SQL proto length plus uid length*/
-            malloc_size = 52;
+            malloc_size = 128;
             delete_proto = xmalloc(malloc_size);
+            if(NULL == delete_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_edu: delete alloc memory error");
+                xfree(delete_proto);
+                continue;
+            }
 
             snprintf(delete_proto, (malloc_size),
                     "delete from base_user_education where uid=%s", uid );
@@ -355,8 +414,16 @@ mysql_connector(void *args) {
             }
 
             /* Magic number is SQL proto length plus uid length*/
-            malloc_size = raw_len + 150;
+            malloc_size = raw_len + 512;
             insert_proto = xmalloc(malloc_size);
+            if(NULL == insert_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_edu: insert alloc memory error");
+                xfree(delete_proto);
+                xfree(insert_proto);
+                continue;
+            }
 
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
                 edu = strsep(&neaf, ",");
@@ -392,8 +459,16 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_edu: AFFECT:%d", affect);
-                malloc_size = raw_len + 75;
+                malloc_size = raw_len + 128;
                 insert_proto = xmalloc(malloc_size);
+                if(NULL == insert_proto) {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_WARN,
+                            "MySQL_conn_edu: insert alloc memory error");
+                    xfree(delete_proto);
+                    xfree(insert_proto);
+                    continue;
+                }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
                         uid=%s", uid);
@@ -415,9 +490,9 @@ mysql_connector(void *args) {
                     fprintf(server.dump_file_handler, "%s\n", insert_proto);
                     fflush(server.dump_file_handler);
                 }
-                notify_rt("S001", uid);
-                notify_rt("S002", uid);
-                notify_rt("S003", uid);
+                //notify_rt("S001", uid);
+                //notify_rt("S002", uid);
+                //notify_rt("S003", uid);
             }
 
             xfree(delete_proto);
@@ -431,9 +506,16 @@ mysql_connector(void *args) {
                     "MySQL_conn_emp: post employment");
             uid = strsep(&raw_string, ";");
 
-            malloc_size = 63;
+            malloc_size = 128;
             /* Magic number is SQL proto length plus uid length*/
             delete_proto = xmalloc(malloc_size);
+            if(NULL == delete_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_emp: delete alloc memory error");
+                xfree(delete_proto);
+                continue;
+            }
 
             snprintf(delete_proto, (malloc_size),
                     "delete from base_user_employment where uid=%s", uid );
@@ -463,8 +545,16 @@ mysql_connector(void *args) {
             }
 
             /* Magic number is SQL proto length plus uid length*/
-            malloc_size = raw_len + 202;
+            malloc_size = raw_len + 512;
             insert_proto = xmalloc(malloc_size);
+            if(NULL == insert_proto) {
+                log4c_category_log(
+                        log_handler, LOG4C_PRIORITY_WARN,
+                        "MySQL_conn_emp: insert alloc memory error");
+                xfree(delete_proto);
+                xfree(insert_proto);
+                continue;
+            }
 
             while( (neaf = strsep(&raw_string, ";")) != NULL ) {
                 begin_year = strsep(&neaf, ",");
@@ -503,8 +593,16 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_emp: AFFECT:%d", affect);
-                malloc_size = raw_len + 75;
+                malloc_size = raw_len + 128;
                 insert_proto = xmalloc(malloc_size);
+                if(NULL == insert_proto) {
+                    log4c_category_log(
+                            log_handler, LOG4C_PRIORITY_WARN,
+                            "MySQL_conn_emp: insert alloc memory error");
+                    xfree(delete_proto);
+                    xfree(insert_proto);
+                    continue;
+                }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
                         uid=%s", uid);

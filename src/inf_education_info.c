@@ -23,6 +23,8 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SEI: sync_education_cb active");
+    char *text_buf = NULL;
+    char *sub_text_buf = NULL;
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -82,7 +84,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_education_info__get_packed_size(_sync_education_info);
 
-    char *text_buf = xmalloc(proto_length * 2);
+    text_buf = xmalloc(proto_length + 20 * 1024);
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
@@ -90,7 +92,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
-    char *sub_text_buf = xmalloc(proto_length + 1);
+    sub_text_buf = xmalloc(proto_length + 1500);
     if(NULL == sub_text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
@@ -103,14 +105,15 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
     sprintf(text_buf, "3:%ld",_sync_education_info->uid);
     int i;
     for(i = 0; i < _sync_education_info->n_educations; i++) {
-        sprintf (sub_text_buf, ";%d,%s,%s,%d,%d",
+        snprintf (sub_text_buf, proto_length+1500, ";%d,%s,%s,%d,%d",
                 _sync_education_info->educations[i]->edu,
                 _sync_education_info->educations[i]->school,
-                _sync_education_info->educations[i]->department,
+                _sync_education_info->educations[i]->department ==
+                NULL ? "" : _sync_education_info->educations[i]->department,
                 _sync_education_info->educations[i]->class_,
                 _sync_education_info->educations[i]->year
                 );
-        strcat(text_buf, sub_text_buf);
+        strncat(text_buf, sub_text_buf, proto_length + 20 * 1024);
     }
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
