@@ -92,6 +92,13 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
+    if(0 == _sync_header_info->uid) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SHI: uid eq zero");
+        evhttp_send_error(req, HTTP_BADREQUEST, 0);
+        goto CLEANUP;
+    }
     /* Type flag 2 */
     sprintf(text_buf, "2:%ld,%d",
             _sync_header_info->uid,
@@ -106,6 +113,7 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
                 "SHI: push to queue failure");
+	xfree(text_buf);
         /* TODO: Dual error */
     }
 

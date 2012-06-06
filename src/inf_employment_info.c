@@ -22,7 +22,7 @@ void
 post_SMI_cb(struct evhttp_request *req, void *arg) {
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
-            "SMI: sync_education_cb active");
+            "SMI: sync_employment_cb active");
     char *text_buf = NULL;
     char *sub_text_buf = NULL;
     size_t evbuf_length;
@@ -36,7 +36,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(EVHTTP_REQ_POST != evhttp_request_get_command(req)) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
-                "SMI: sync_education_info: not http post package");
+                "SMI: sync_employment_info: not http post package");
         evhttp_send_error(req, HTTP_BADMETHOD, 0);
         return ;
     }
@@ -47,7 +47,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(evbuf_length <= 0) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
-                "SMI: sync_basic_info: http package length less than or equal 0");
+                "SMI: sync_employment_info: http package length less than or equal 0");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         return ;
     }
@@ -57,7 +57,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(NULL == body_buff) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "SMI: sync_education_info: xmalloc memory for body_buff exceptional");
+                "SMI: sync_employment_info: xmalloc memory for body_buff exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         return ;
     }
@@ -76,7 +76,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(NULL == _sync_employment_info) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
-                "SMI: unpack SyncEducationInfo package exceptional");
+                "SMI: unpack SyncEmploymentInfo package exceptional");
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
@@ -84,17 +84,19 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_employment_info__get_packed_size(_sync_employment_info);
 
-    text_buf = xmalloc(proto_length + 20*1024);
+    text_buf = xmalloc(proto_length + 20 * 1024);
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "SMI: sync_education_info: xmalloc memory for text_buf exceptional");
+                "SMI: sync_employment_info: xmalloc memory for text_buf exceptional");
+        evhttp_send_error(req, HTTP_INTERNAL, 0);
+        goto CLEANUP;
     }
     sub_text_buf = xmalloc(proto_length + 1500);
-    if(NULL == text_buf || NULL == sub_text_buf) {
+    if(NULL == sub_text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "SMI: sync_education_info: xmalloc memory for sub_text_buf exceptional");
+                "SMI: sync_employment_info: xmalloc memory for sub_text_buf exceptional");
         evhttp_send_error(req, HTTP_INTERNAL, 0);
         goto CLEANUP;
     }
@@ -131,6 +133,7 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
                 "SMI: push to queue failure");
+	xfree(text_buf);
         /* TODO: Dual error */
     }
 
@@ -141,8 +144,8 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
 
 CLEANUP:
     xfree(body_buff);
-    /* free text_buf when after queue pop */
     xfree(sub_text_buf);
+    /* free text_buf when after queue pop */
     if(_sync_employment_info) {
         community__sync_employment_info__free_unpacked(_sync_employment_info, NULL);
     }

@@ -92,6 +92,13 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
 
+    if(0 == _sync_basic_info->uid) {
+        log4c_category_log(
+                log_handler, LOG4C_PRIORITY_NOTICE,
+                "SBI: uid eq zero");
+        evhttp_send_error(req, HTTP_BADREQUEST, 0);
+        goto CLEANUP;
+    }
     /* Type flag 1 */
     snprintf( text_buf, proto_length+1500, "1:%ld,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
@@ -101,12 +108,18 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->constellation,
             _sync_basic_info->blood_types,
             _sync_basic_info->sex,
-            _sync_basic_info->home_nation,
-            _sync_basic_info->home_pro,
-            _sync_basic_info->home_city,
-            _sync_basic_info->now_nation,
-            _sync_basic_info->now_pro,
-            _sync_basic_info->now_city
+            _sync_basic_info->home_nation ==
+	    NULL ? "" : _sync_basic_info->home_nation,
+            _sync_basic_info->home_pro == 
+	    NULL ? "" : _sync_basic_info->home_pro,
+            _sync_basic_info->home_city ==
+	    NULL ? "" : _sync_basic_info->home_city,
+            _sync_basic_info->now_nation ==
+	    NULL ? "" : _sync_basic_info->now_nation,
+            _sync_basic_info->now_pro ==
+	    NULL ? "" : _sync_basic_info->now_pro,
+            _sync_basic_info->now_city ==
+	    NULL ? "" : _sync_basic_info->now_city
            );
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
