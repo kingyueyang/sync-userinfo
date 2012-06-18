@@ -129,7 +129,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     if(APR_SUCCESS != push_rv) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "push to queue failure");
+                "SBI:push to queue failure");
 	xfree(text_buf);
         /* TODO: Dual error */
     }
