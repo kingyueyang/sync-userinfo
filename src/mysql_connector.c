@@ -109,7 +109,7 @@ mysql_connector(void *args) {
         delete_proto = NULL;
         insert_proto = NULL;
         if (apr_queue_pop(queue, &pop_string) != APR_SUCCESS)
-		continue;
+            continue;
 
         raw_string = pop_string;
         if(NULL == raw_string) {
@@ -498,7 +498,6 @@ mysql_connector(void *args) {
             xfree(delete_proto);
             xfree(insert_proto);
         }
-
         /* If employment Info */
         if(4 == flag) {
             log4c_category_log(
