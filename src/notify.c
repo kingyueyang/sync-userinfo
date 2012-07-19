@@ -54,6 +54,7 @@ notify_rt(char *type, char *uid) {
         }
 
         xfree(content);
+/*FIXME: memory leak when not curl*/
         curl_slist_free_all (headerlist);
         curl_easy_cleanup(curl);
     }
