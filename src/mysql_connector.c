@@ -136,9 +136,11 @@ mysql_connector(void *args) {
                     "MySQL_conn_basic: post basic");
             /* Split raw string */
             uid = strsep(&raw_string, ",");
+/*TODO: chaned: YYYY-MM-DD*/
             birth_year = strsep(&raw_string, ",");
             birth_month = strsep(&raw_string, ",");
             birth_day = strsep(&raw_string, ",");
+
             constellation = strsep(&raw_string, ",");
 
             blood_types = strsep(&raw_string, ",");
@@ -184,6 +186,7 @@ mysql_connector(void *args) {
                 xfree(update_proto);
                 continue;
             }
+/*TODO: chaned: YYYY-MM-DD*/
             snprintf(update_proto, (malloc_size), "update base_user_info set\
                     birth_year=%s, birth_month=%s, birth_day=%s,\
                     constellation=%s, blood_types=%s, sex=%s,\

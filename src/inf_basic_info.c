@@ -100,6 +100,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
     /* Type flag 1 */
+/*TODO: chaned: YYYY-MM-DD*/ 
     snprintf( text_buf, proto_length+1500, "1:%ld,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
