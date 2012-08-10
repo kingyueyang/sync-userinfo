@@ -76,7 +76,11 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     if(NULL == _sync_employment_info) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_NOTICE,
+<<<<<<< HEAD
                 "SMI: unpack SyncEmploymentInfo package exceptional");
+=======
+                "SMI: unpack SyncEducationInfo package exceptional");
+>>>>>>> a2e9a3df73caf1cab2519365b23d90634e00147a
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
@@ -84,7 +88,11 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
     proto_length =
         community__sync_employment_info__get_packed_size(_sync_employment_info);
 
+<<<<<<< HEAD
     text_buf = xmalloc(proto_length + 20 * 1024);
+=======
+    text_buf = xmalloc(proto_length + 20*1024);
+>>>>>>> a2e9a3df73caf1cab2519365b23d90634e00147a
     if(NULL == text_buf) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
@@ -93,7 +101,11 @@ post_SMI_cb(struct evhttp_request *req, void *arg) {
         goto CLEANUP;
     }
     sub_text_buf = xmalloc(proto_length + 1500);
+<<<<<<< HEAD
     if(NULL == sub_text_buf) {
+=======
+    if(NULL == text_buf || NULL == sub_text_buf) {
+>>>>>>> a2e9a3df73caf1cab2519365b23d90634e00147a
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
                 "SMI: sync_employment_info: xmalloc memory for sub_text_buf exceptional");
