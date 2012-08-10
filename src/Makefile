@@ -12,6 +12,7 @@ OBJ=sync-userinfo.o receiver.o \
     inf_education_info.o inf_employment_info.o \
     mysql_connector.o utils.o \
     logging.o config.o notify.o \
+    gen_constellation.o\
     ../proto/community.pb-c.c
 
 ${EXEC}:${OBJ}
@@ -48,6 +49,9 @@ config.o:config.c
 	${CC} -c -o $@ $< ${INC}
 
 notify.o:notify.c
+	${CC} -c -o $@ $< ${INC}
+
+gen_constellation.o:gen_constellation.c
 	${CC} -c -o $@ $< ${INC}
 
 .PYHON:

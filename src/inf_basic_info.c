@@ -105,7 +105,9 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
             _sync_basic_info->birth_day,
-            _sync_basic_info->constellation,
+            //_sync_basic_info->constellation,
+	    generate_constellation(_sync_basic_info->birth_month,
+		    _sync_basic_info->birth_day),
             _sync_basic_info->blood_types,
             _sync_basic_info->sex,
             _sync_basic_info->home_nation ==
@@ -129,7 +131,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
     if(APR_SUCCESS != push_rv) {
         log4c_category_log(
                 log_handler, LOG4C_PRIORITY_WARN,
-                "push to queue failure");
+                "SBI:push to queue failure");
 	xfree(text_buf);
         /* TODO: Dual error */
     }
