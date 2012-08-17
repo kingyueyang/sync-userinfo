@@ -43,13 +43,17 @@
 #include <arpa/inet.h>
 
 #include "sync-userinfo.h"
-#include "inf_basic_info.h"
-#include "inf_header_info.h"
-#include "inf_education_info.h"
-#include "inf_employment_info.h"
+//#include "inf_basic_info.h"
+//#include "inf_header_info.h"
+//#include "inf_education_info.h"
+//#include "inf_employment_info.h"
 #include "logging.h"
 
 void *receiver( void *args);
+void post_SBI_cb(struct evhttp_request *req, void *arg);
+void post_SHI_cb(struct evhttp_request *req, void *arg);
+void post_SEI_cb(struct evhttp_request *req, void *arg);
+void post_SMI_cb(struct evhttp_request *req, void *arg);
 static void other_cb( struct evhttp_request *req, void *arg );
 
 extern struct syncServer server;

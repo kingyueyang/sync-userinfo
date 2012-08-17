@@ -21,13 +21,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <apr_queue.h>
+#include <event2/event.h>
+#include <event2/http.h>
+#include <event2/buffer.h>
+#include <event2/util.h>
+#include <event2/keyvalq_struct.h>
 
 #include "../proto/community.pb-c.h"
-#include "receiver.h"
+#include "logging.h"
 #include "utils.h"
+
 #include "gen_constellation.h"
 
 void post_SBI_cb(struct evhttp_request *req, void *arg);
+char *get_mobile(long unsigned int uid);
 
 extern apr_pool_t *pool;
 extern apr_queue_t *queue;

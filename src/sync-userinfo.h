@@ -27,7 +27,6 @@
 #include <sys/types.h>
 #include <apr_queue.h>
 
-#include "receiver.h"
 #include "mysql_connector.h"
 #include "logging.h"
 #include "config.h"
@@ -35,28 +34,9 @@
 //#define	QUEUE_SIZE 80960000 [> Receiver Queue <]
 #define	QUEUE_SIZE 40960000 /* Receiver Queue */
 
-struct syncServer {
-    const char *receiverIP;
-    int receiverPort;
-    const char *dump_file;
-
-    const char *mysqlIP;
-    const char *mysqlUser;
-    const char *mysqlPasswd;
-    const char *db;
-    int mysqlPort;
-    int mysqlThread;
-
-    FILE *dump_file_handler;
-};
-
-int initServerConfig(void);
-int xdaemon(void);
-int create_queue(void);
-void create_thread();
+int pthread_tryjoin_np(pthread_t thread, void **retval);
 
 extern struct syncServer server;
-extern log4c_category_t* log_handler;
 
 struct mysql_item {
     char *neaf;
@@ -106,6 +86,7 @@ struct mysql_item {
     MYSQL mysql;
 } mysql_itmes[20];
 
+void *receiver( void *args);
 int create_dump(void);
 
 #endif

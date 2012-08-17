@@ -1,16 +1,19 @@
 all:sync-userinfo
 
-INC=`/usr/local/apr/bin/apr-1-config --includes` -I./ `mysql_config --include`
-LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -llog4c -lconfig `/usr/local/apr/bin/apr-1-config --link-ld` `/usr/local/apr/bin/apu-1-config --link-ld` `mysql_config --libs`
-CC=gcc -g -Wall -O2
+XML=/usr/include/libxml2
+INC=`/usr/local/apr/bin/apr-1-config --includes` -I./ `mysql_config --include` -I${XML}
+LIB=-levent -lcurl -lprotobuf-c -lpthread -laprutil-1 -lapr-1 -llog4c -lconfig `/usr/local/apr/bin/apr-1-config --link-ld` `/usr/local/apr/bin/apu-1-config --link-ld` `mysql_config --libs`  `xml2-config --cflags` -lxml2
+#CC=gcc -std=c99 -g
+#CC=gcc -O2 -Wall
+CC=gcc -g -Wall
 EXEC=sync-userinfo
 
 OBJ=sync-userinfo.o receiver.o \
     inf_basic_info.o inf_header_info.o \
     inf_education_info.o inf_employment_info.o \
     mysql_connector.o utils.o \
-    logging.o config.o notify.o \
-    gen_constellation.o\
+    logging.o config.o  \
+    gen_constellation.o g_mobile.o\
     ../proto/community.pb-c.c
 
 ${EXEC}:${OBJ}
@@ -21,6 +24,9 @@ sync-userinfo.o:sync-userinfo.c
 
 receiver.o:receiver.c
 	${CC} -c $< ${INC}
+
+g_mobile.o:g_mobile.c
+	${CC} -c $< -I${INC}
 
 inf_basic_info.o:inf_basic_info.c
 	${CC} -c $< ${INC}

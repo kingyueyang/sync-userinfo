@@ -21,6 +21,7 @@
 void
 post_SHI_cb(struct evhttp_request *req, void *arg) {
     char *text_buf = NULL;
+    char *mobile = NULL;
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SHI: sync_header_cb active");
@@ -99,11 +100,14 @@ post_SHI_cb(struct evhttp_request *req, void *arg) {
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
+    mobile = get_mobile(_sync_header_info->uid);
     /* Type flag 2 */
-    sprintf(text_buf, "2:%ld,%d",
+    sprintf(text_buf, "2:%ld,%s,%d",
             _sync_header_info->uid,
+	    mobile,
             _sync_header_info->header
           );
+    xfree(mobile);
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SHI: final result >>>%s<<", text_buf);

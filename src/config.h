@@ -23,10 +23,29 @@
 #include	<stdlib.h>
 #include	<libconfig.h>
 
-#include "sync-userinfo.h"
+#include "logging.h"
 
 int get_conf(const char *conf_file);
 
+struct syncServer {
+    const char *receiverIP;
+    int receiverPort;
+    const char *dump_file;
+
+    const char *mysqlIP;
+    const char *mysqlUser;
+    const char *mysqlPasswd;
+    const char *db;
+    int mysqlPort;
+    int mysqlThread;
+
+    FILE *dump_file_handler;
+};
+
+int initServerConfig(void);
+int xdaemon(void);
+int create_queue(void);
+void create_thread();
 extern struct syncServer server;
 struct syncServer server_;
 

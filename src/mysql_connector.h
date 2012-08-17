@@ -23,14 +23,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <mysql/mysql.h>
+#include <apr_queue.h>
 
-#include "receiver.h"
 #include "utils.h"
-#include "notify.h"
+#include "logging.h"
+#include "sync-userinfo.h"
 
 void *mysql_connector(void *args);
 
 extern apr_pool_t *pool;
 extern apr_queue_t *queue;
+extern struct syncServer server;
 
 #endif

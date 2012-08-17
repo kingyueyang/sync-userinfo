@@ -24,6 +24,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
             log_handler, LOG4C_PRIORITY_TRACE,
             "SEI: sync_education_cb active");
     char *text_buf = NULL;
+    char *mobile = NULL;
     char *sub_text_buf = NULL;
     size_t evbuf_length;
     size_t proto_length;
@@ -108,8 +109,9 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
+    mobile = get_mobile(_sync_education_info->uid);
     /* Type flag 3 */
-    sprintf(text_buf, "3:%ld",_sync_education_info->uid);
+    sprintf(text_buf, "3:%ld,%s",_sync_education_info->uid, mobile);
     int i;
     for(i = 0; i < _sync_education_info->n_educations; i++) {
         snprintf (sub_text_buf, proto_length+1500, ";%d,%s,%s,%d,%d",
@@ -123,6 +125,7 @@ post_SEI_cb(struct evhttp_request *req, void *arg) {
                 );
         strncat(text_buf, sub_text_buf, proto_length + 20 * 1024);
     }
+    xfree(mobile);
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SEI: final result >>>%s<<", text_buf);

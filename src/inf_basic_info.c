@@ -24,6 +24,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             log_handler, LOG4C_PRIORITY_TRACE,
             "SBI: sync_basic_cb active");
     char *text_buf = NULL;
+    char *mobile = NULL;
     size_t evbuf_length;
     size_t proto_length;
     apr_status_t push_rv;
@@ -99,9 +100,9 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
         evhttp_send_error(req, HTTP_BADREQUEST, 0);
         goto CLEANUP;
     }
+    mobile = get_mobile(_sync_basic_info->uid);
     /* Type flag 1 */
-/*TODO: chaned: YYYY-MM-DD*/ 
-    snprintf( text_buf, proto_length+1500, "1:%ld,%d,%d,%d,%d,%d,%d,%s,%s,%s,%s,%s,%s",
+    snprintf( text_buf, proto_length+1500, "1:%ld,%4d-%02d-%02d,%d,%d,%d,%s,%s,%s,%s,%s,%s,%s",
             _sync_basic_info->uid,
             _sync_basic_info->birth_year,
             _sync_basic_info->birth_month,
@@ -111,6 +112,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
 		    _sync_basic_info->birth_day),
             _sync_basic_info->blood_types,
             _sync_basic_info->sex,
+	    mobile,
             _sync_basic_info->home_nation ==
 	    NULL ? "" : _sync_basic_info->home_nation,
             _sync_basic_info->home_pro == 
@@ -124,6 +126,7 @@ post_SBI_cb(struct evhttp_request *req, void *arg) {
             _sync_basic_info->now_city ==
 	    NULL ? "" : _sync_basic_info->now_city
            );
+    xfree(mobile);
     log4c_category_log(
             log_handler, LOG4C_PRIORITY_TRACE,
             "SBI: final result >>>%s<<", text_buf);

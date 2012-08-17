@@ -34,8 +34,9 @@ notify_rt(char *type, char *uid) {
         curl_easy_setopt(curl, CURLOPT_URL, "http://172.21.73.131:8080/realtime/jservice/recommondation");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
 
+        /*curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "S001,407902377");*/
+
         /*同校S001 同班S002 同乡S003*/
-/*FIXME: NULL*/
         char *content = xmalloc(CONTENT_LEN);
         sprintf(content, "%s,%s", type, uid);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, content);
@@ -53,7 +54,6 @@ notify_rt(char *type, char *uid) {
         }
 
         xfree(content);
-/*FIXME: memory leak when not curl*/
         curl_slist_free_all (headerlist);
         curl_easy_cleanup(curl);
     }

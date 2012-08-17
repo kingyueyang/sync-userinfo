@@ -23,12 +23,17 @@ mysql_connector(void *args) {
     char *neaf;
 
     char *uid;
-    char *birth_year;
-    char *birth_month;
-    char *birth_day;
+
+    //char *birth_year;
+    //char *birth_month;
+    //char *birth_day;
+
+    char *birthday;
+
     char *constellation;
     char *blood_types;
     char *sex;
+    char *mobile_no;
     char *home_nation;
     char *home_pro;
     char *home_city;
@@ -109,7 +114,7 @@ mysql_connector(void *args) {
         delete_proto = NULL;
         insert_proto = NULL;
         if (apr_queue_pop(queue, &pop_string) != APR_SUCCESS)
-            continue;
+		continue;
 
         raw_string = pop_string;
         if(NULL == raw_string) {
@@ -136,15 +141,16 @@ mysql_connector(void *args) {
                     "MySQL_conn_basic: post basic");
             /* Split raw string */
             uid = strsep(&raw_string, ",");
-/*TODO: chaned: YYYY-MM-DD*/
-            birth_year = strsep(&raw_string, ",");
-            birth_month = strsep(&raw_string, ",");
-            birth_day = strsep(&raw_string, ",");
-
+            /*birth_year = strsep(&raw_string, ",");
+            birth_month = strsep(&raw_string, ",");*/
+            birthday = strsep(&raw_string, ",");
             constellation = strsep(&raw_string, ",");
 
             blood_types = strsep(&raw_string, ",");
             sex = strsep(&raw_string, ",");
+            mobile_no = strsep(&raw_string, ",");
+	    printf("%s\n", mobile_no);
+            log4c_category_log( log_handler, LOG4C_PRIORITY_TRACE, "check 0");
 
             home_nation = strsep(&raw_string, ",");
             if(strcmp("国家/地区", home_nation) == 0) {
@@ -158,6 +164,9 @@ mysql_connector(void *args) {
 
             home_city = strsep(&raw_string, ",");
             if(strcmp("城市", home_city) == 0){
+		    home_city= "";
+	    }
+            if(strcmp("地区", home_city) == 0){
 		    home_city= "";
 	    }
 
@@ -175,7 +184,11 @@ mysql_connector(void *args) {
             if(strcmp("城市", now_city) == 0){
 		    now_city= "";
 	    }
+            if(strcmp("地区", now_city) == 0){
+		    now_city= "";
+	    }
 
+            log4c_category_log( log_handler, LOG4C_PRIORITY_TRACE, "check 1");
             /* Magic number 350 is SQL proto length */
             malloc_size = raw_len + 512;
             update_proto = xmalloc(malloc_size);
@@ -186,15 +199,17 @@ mysql_connector(void *args) {
                 xfree(update_proto);
                 continue;
             }
-/*TODO: chaned: YYYY-MM-DD*/
+            log4c_category_log( log_handler, LOG4C_PRIORITY_TRACE, "check 2");
             snprintf(update_proto, (malloc_size), "update base_user_info set\
-                    birth_year=%s, birth_month=%s, birth_day=%s,\
+                    birthday='%s',\
                     constellation=%s, blood_types=%s, sex=%s,\
+		    mobileno=%s,\
                     home_nation='%s', home_pro='%s', home_city='%s',\
                     now_nation='%s', now_pro='%s', now_city='%s'\
                     where uid=%s", 
-                    birth_year, birth_month, birth_day,
+                    birthday,
                     constellation, blood_types, sex,
+		    mobile_no,
                     home_nation, home_pro, home_city,
                     now_nation, now_pro, now_city,
                     uid);
@@ -241,13 +256,15 @@ mysql_connector(void *args) {
                 }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
-                        birth_year=%s, birth_month=%s, birth_day=%s,\
+                        birthday='%s',\
                         constellation=%s, blood_types=%s, sex=%s,\
+		        mobileno=%s,\
                         home_nation='%s', home_pro='%s', home_city='%s',\
                         now_nation='%s', now_pro='%s', now_city='%s',\
                         uid=%s", 
-                        birth_year, birth_month, birth_day,
+                        birthday,
                         constellation, blood_types, sex,
+			mobile_no,
                         home_nation, home_pro, home_city,
                         now_nation, now_pro, now_city,
                         uid);
@@ -288,6 +305,7 @@ mysql_connector(void *args) {
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_header: post header");
             uid = strsep(&raw_string, ",");
+            mobile_no = strsep(&raw_string, ",");
             header = strsep(&raw_string, ",");
 
             /* Magic number 66 is SQL proto length */
@@ -301,8 +319,8 @@ mysql_connector(void *args) {
                 continue;
             }
             snprintf(update_proto, (malloc_size),
-                    "update base_user_info set header=%s where uid=%s",
-                    header, uid);
+                    "update base_user_info set mobileno=%s, header=%s where uid=%s",
+                    mobile_no, header, uid);
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_header: updata proto: %s", update_proto);
@@ -329,7 +347,7 @@ mysql_connector(void *args) {
             }
             /* new user */
             if(0 == affect) {
-                malloc_size = raw_len + 128;
+                malloc_size = raw_len + 256;
                 insert_proto = xmalloc(malloc_size);
                 if(NULL == insert_proto) {
                     log4c_category_log(
@@ -341,8 +359,8 @@ mysql_connector(void *args) {
                 }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
-                        header=%s, uid=%s", 
-                        header, uid);
+                        mobileno=%s, header=%s, uid=%s", 
+                        mobile_no, header, uid);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_header: insert proto: %s", insert_proto);
@@ -376,7 +394,9 @@ mysql_connector(void *args) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_edu: post education");
-            uid = strsep(&raw_string, ";");
+	    char *tmp = strsep(&raw_string, ";");
+            uid = strsep(&tmp, ",");
+            mobile_no = tmp;
 
             /* Magic number is SQL proto length plus uid length*/
             malloc_size = 128;
@@ -462,7 +482,7 @@ mysql_connector(void *args) {
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_ERROR,
                         "MySQL_conn_edu: AFFECT:%d", affect);
-                malloc_size = raw_len + 128;
+                malloc_size = raw_len + 256;
                 insert_proto = xmalloc(malloc_size);
                 if(NULL == insert_proto) {
                     log4c_category_log(
@@ -474,7 +494,7 @@ mysql_connector(void *args) {
                 }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
-                        uid=%s", uid);
+                        uid=%s, mobileno=%s", uid, mobile_no);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_edu: insert proto: %s", insert_proto);
@@ -501,12 +521,15 @@ mysql_connector(void *args) {
             xfree(delete_proto);
             xfree(insert_proto);
         }
+
         /* If employment Info */
         if(4 == flag) {
             log4c_category_log(
                     log_handler, LOG4C_PRIORITY_TRACE,
                     "MySQL_conn_emp: post employment");
-            uid = strsep(&raw_string, ";");
+	    char *tmp = strsep(&raw_string, ";");
+            uid = strsep(&tmp, ",");
+            mobile_no = tmp;
 
             malloc_size = 128;
             /* Magic number is SQL proto length plus uid length*/
@@ -607,7 +630,7 @@ mysql_connector(void *args) {
                 }
                 snprintf(insert_proto, malloc_size,
                         "insert into base_user_info set\
-                        uid=%s", uid);
+                        uid=%s, mobileno=%s", uid, mobile_no);
                 log4c_category_log(
                         log_handler, LOG4C_PRIORITY_TRACE,
                         "MySQL_conn_emp: insert proto: %s", insert_proto);
